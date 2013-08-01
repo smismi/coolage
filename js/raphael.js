@@ -559,6 +559,7 @@
 			"arrow-end": "none",
 			"arrow-start": "none",
 			blur: 0,
+			"clip-path": 0,
 			"clip-rect": "0 0 1e9 1e9",
 			cursor: "default",
 			cx: 0,
@@ -596,6 +597,7 @@
 			y: 0
 		},
 		availableAnimAttrs = R._availableAnimAttrs = {
+			along: "along",
 			blur: nu,
 			"clip-rect": "csv",
 			cx: nu,
@@ -609,6 +611,7 @@
 			r: nu,
 			rx: nu,
 			ry: nu,
+			scale: "csv",
 			stroke: "colour",
 			"stroke-opacity": nu,
 			"stroke-width": nu,
@@ -617,6 +620,8 @@
 			x: nu,
 			y: nu
 		},
+		rp = "replace",
+//		R.type = (win.SVGAngle || doc.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1") ? "SVG" : "VML"),
 		whitespace = /[\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029]/g,
 		commaSpaces = /[\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029]*,[\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029]*/,
 		hsrg = {hs: 1, rg: 1},
@@ -6051,6 +6056,15 @@
 										delete o.clip;
 									}
 								}
+								break;
+							case "clip-path":
+								var elp = $("clipPath"), elpath = $("path");
+								$(elpath, { d: value });
+								elp.id = "r" + (R._id++)[toString](36);
+								elp[appendChild](elpath);
+								o.paper.defs[appendChild](elp);
+								$(node, {"clip-path": "url(#" + elp.id + ")"});
+								o.clip = elp;
 								break;
 							case "path":
 								if (o.type == "path") {
