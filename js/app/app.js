@@ -1,14 +1,11 @@
 $(document).ready(function () {
 
-	console.log("ready");
-
 	var c = document.getElementById("cnvs");
 	var paper = Raphael(c, 1000, 1000);
 	var image, image1, path;
 
 	Raphael(function () {
 
-		alert("ready");
 		img = document.getElementById("photo");
 		img.style.display = "none";
 
@@ -27,9 +24,10 @@ $(document).ready(function () {
 				console.log("OFF 2");
 			});
 
-//		path = paper.path('M 250 250 l 0 -50 l -50 0 l 0 -50 l -50 0 l 0 50 l -50 0 l 0 50 z';
+		path = paper.path('M 250 250 l 0 -50 l -50 0 l 0 -50 l -50 0 l 0 50 l -50 0 l 0 50 z');
 //		image1.attr({"clip-path": path});
 
+		path.attr({fill: "url('img/PkGAW_n7TTA.jpg')"});
 
 		// Add freeTransform
 		var ft = paper.freeTransform(image1);
@@ -50,6 +48,31 @@ $(document).ready(function () {
 
 		// Add freeTransform with options and callback
 		ft = paper.freeTransform(image1, { keepRatio: true }, function(ft, events) {
+			console.log(ft.attrs);
+		});
+
+		// Change options on the fly
+		ft.setOpts({ keepRatio: false });
+
+		// Add freeTransform
+		var ft = paper.freeTransform(path);
+
+		// Hide freeTransform handles
+		ft.hideHandles();
+
+		// Show hidden freeTransform handles
+		ft.showHandles();
+
+		// Apply transformations programmatically
+		ft.attrs.rotate = 45;
+
+		ft.apply();
+
+		// Remove freeTransform completely
+		ft.unplug();
+
+		// Add freeTransform with options and callback
+		ft = paper.freeTransform(path, { keepRatio: true }, function(ft, events) {
 			console.log(ft.attrs);
 		});
 
