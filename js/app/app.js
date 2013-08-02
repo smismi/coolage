@@ -15,7 +15,7 @@ $(document).ready(function () {
 //		}, function () {
 //            console.log("OFF 1");
 //        });
-		image1 = paper.image(img.src, 0, 0, 300, 240).attr({"clip-path": _path}).hover(function () {
+		image1 = paper.image(img.src, 0, 0, 300, 240).hover(function () {
 				console.log("ON 2");
 			}, function () {
 				console.log("OFF 2");
@@ -69,27 +69,26 @@ $(document).ready(function () {
 //		ft.unplug();
 
 		// Add freeTransform with options and callback
-        _ft = paper.freeTransform(path, { keepRatio: true }, function(_ft, events) {
-            console.log(_ft.attrs);
-            _new = flatten_transformations(path,true)
-            console.log(_new);
-//ТУТ
-            image1.attr({"clip-path": _new});
-//            image1.attr({"clip-path": 'M 0 0 l 200 0 l 0 ' + Math.random() * 100 + ' l -100 0  z'});
-
-            ft.attrs = _ft.attrs;
-            ft.apply();
-
-
-//            _path = ft.subject.attrs.path.toLocaleString();
-//			console.log(ft.subject.attrs.path.toLocaleString());
-        });
-		ft = paper.freeTransform(image1, { keepRatio: true }, function(ft, events) {
+//        _ft = paper.freeTransform(path, { keepRatio: true }, function(_ft, events) {
+//            console.log(_ft.attrs);
+//            _new = flatten_transformations(path,true)
+//            console.log(_new);
+////ТУТ
+////            image1.attr({"clip-path": _new});
+////            image1.attr({"clip-path": 'M 0 0 l 200 0 l 0 ' + Math.random() * 100 + ' l -100 0  z'});
+//
+//            ft.attrs = _ft.attrs;
+//            ft.apply();
+//
+//
+////            _path = ft.subject.attrs.path.toLocaleString();
+////			console.log(ft.subject.attrs.path.toLocaleString());
+//        });
+		ft = paper.freeTransform(image1, {draw: [ 'bbox', 'circle' ], keepRatio:  [  'bboxCorners', 'bboxSides']  }, function(ft, events) {
 
 //            _path = ft.subject.attrs.path.toLocaleString();
 //			console.log(ft.subject.attrs.path.toLocaleString());
 		});
-        ft.hideHandles();
 
 //		// Change options on the fly
 //		ft.setOpts({ keepRatio: false });
