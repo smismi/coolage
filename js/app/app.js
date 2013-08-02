@@ -73,7 +73,7 @@ $(document).ready(function () {
             _new = flatten_transformations(path,true)
             console.log(_new);
 //ТУТ
-//            image1.attr({"clip-path": _new.replace(',', ' ')});
+            image1.attr({"clip-path": _new});
 //            image1.attr({"clip-path": 'M 0 0 l 200 0 l 0 ' + Math.random() * 100 + ' l -100 0  z'});
 
             ft.attrs = _ft.attrs;
@@ -163,6 +163,9 @@ function flatten_transformations(raphael_path_elem, normalize_path) {
             }
         }
     }
+    newcoords = $.map(newcoords, function(n){
+        return n;
+    });
     newcoords = newcoords.join(" ");
     return newcoords;
 } // function flatten_transformations
