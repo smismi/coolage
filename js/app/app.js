@@ -10,11 +10,7 @@ $(document).ready(function () {
 		img = document.getElementById("photo");
 		img.style.display = "none";
 
-//		image = paper.image(img.src, 140, 140, 320, 240).hover(function () {
-//			console.log("ON 1");
-//		}, function () {
-//            console.log("OFF 1");
-//        });
+
 		image1 = paper.image(img.src, 0, 0, 300, 240).hover(function () {
 				console.log("ON 2");
 			}, function () {
@@ -22,68 +18,24 @@ $(document).ready(function () {
 			});
 
 		path = paper.path(_path);
-//		image1.attr({"clip-rect": '12 21 150 150'});
-
-//		path.attr({fill: "url('img/PkGAW_n7TTA.jpg')"});
-//
-		// Add freeTransform
-//		var ft = paper.freeTransform(image1);
-//
-//		// Hide freeTransform handles
-//		ft.hideHandles();
-//
-//		// Show hidden freeTransform handles
-//		ft.showHandles();
-//
-//		// Apply transformations programmatically
-//		ft.attrs.rotate = 45;
-//
-//		ft.apply();
-//
-//		// Remove freeTransform completely
-//		ft.unplug();
+		image1.attr({"clip-rect": _path});
 
 		// Add freeTransform with options and callback
-//		ft = paper.freeTransform(image1, { keepRatio: true }, function(ft, events) {
-//			console.log(ft.attrs);
-//		});
-//
-//		// Change options on the fly
-//		ft.setOpts({ keepRatio: false });
-//
-//		// Add freeTransform
-//		var ft = paper.freeTransform(path);
-//
-//		// Hide freeTransform handles
-//		ft.hideHandles();
-//
-//		// Show hidden freeTransform handles
-//		ft.showHandles();
-//
-//		// Apply transformations programmatically
-//		ft.attrs.rotate = 45;
-//
-//		ft.apply();
-//
-//		// Remove freeTransform completely
-//		ft.unplug();
-
-		// Add freeTransform with options and callback
-//        _ft = paper.freeTransform(path, { keepRatio: true }, function(_ft, events) {
-//            console.log(_ft.attrs);
-//            _new = flatten_transformations(path,true)
+        _ft = paper.freeTransform(path, { keepRatio: true }, function(_ft, events) {
+            console.log(_ft.attrs);
+            _new = flatten_transformations(path,true)
 //            console.log(_new);
 ////ТУТ
-////            image1.attr({"clip-path": _new});
-////            image1.attr({"clip-path": 'M 0 0 l 200 0 l 0 ' + Math.random() * 100 + ' l -100 0  z'});
+            image1.attr({"clip-path": _new});
+//            image1.attr({"clip-path": 'M 0 0 l 200 0 l 0 ' + Math.random() * 100 + ' l -100 0  z'});
 //
-//            ft.attrs = _ft.attrs;
-//            ft.apply();
+            ft.attrs = _ft.attrs;
+            ft.apply();
 //
 //
 ////            _path = ft.subject.attrs.path.toLocaleString();
 ////			console.log(ft.subject.attrs.path.toLocaleString());
-//        });
+        });
 		ft = paper.freeTransform(image1, {draw: [ 'bbox', 'circle' ], keepRatio:  [  'bboxCorners', 'bboxSides']  }, function(ft, events) {
 
 //            _path = ft.subject.attrs.path.toLocaleString();
