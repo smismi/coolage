@@ -25,7 +25,8 @@ $(document).ready(function () {
 			});
 
 		path = paper.path('M 250 250 l 0 -50 l -50 0 l 0 -50 l -50 0 l 0 50 l -50 0 l 0 50 z');
-//		image1.attr({"clip-path": path});
+//		image1.attr({"clip-path": 'M 250 250 l 0 -50 l -50 0 l 0 -50 l -50 0 l 0 50 l -50 0 l 0 50 z'});
+		image1.attr({"clip-rect": '12 21 150 150'});
 
 		path.attr({fill: "url('img/PkGAW_n7TTA.jpg')"});
 
@@ -73,23 +74,30 @@ $(document).ready(function () {
 
 		// Add freeTransform with options and callback
 		ft = paper.freeTransform(path, { keepRatio: true }, function(ft, events) {
-			console.log(ft.attrs);
+//			console.log(ft.attrs);
+			console.log(ft.subject.attrs.path.toLocaleString());
 		});
 
 		// Change options on the fly
 		ft.setOpts({ keepRatio: false });
 
+
+
+		var anim = Raphael.animation({transform: "r30,500,500s0.5,1r45"}, 1000, "linear").repeat(1);
+		image.animate(anim);
+
+
 	});
 
 
-//
+
+////
 //	timerId = setTimeout(function(){
-//		var anim = Raphael.animation({transform: "r30,500,500s0.5,1r45"}, 22000, "linear").repeat(1);
-//			image.animate(anim);
+
 //		var anim = Raphael.animation({transform: "r90,100,500s0.9,1r45"}, 42000, "linear").repeat(1);
 //			image1.animate(anim);
 //	}, 1900)
-//
+////
 
 
 
