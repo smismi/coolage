@@ -1,7 +1,9 @@
 $(document).ready(function () {
 
 
-    C.Paper = new C.Views.Items({collection: items});
+    new C.Views.Paper({collection: items});
+
+    new C.Views.Layers({collection: items});
 
 
 

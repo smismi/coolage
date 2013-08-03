@@ -2,10 +2,11 @@
 
 
 
-C.Views.Items = Backbone.View.extend({
+C.Views.Paper = Backbone.View.extend({
     initialize: function() {
         this.render();
         this.collection.on('reset', this.render, this);
+        this.collection.on('add', this.renderEach, this);
     },
     render: function() {
 
@@ -48,6 +49,51 @@ C.Views.Item = Backbone.View.extend({
 		});
 
         console.log("ONE ITEM draw")
+        return this;
+    }
+});
+
+C.Views.Layers = Backbone.View.extend({
+    el: "#layers",
+    initialize: function() {
+        console.log("C.Views.Layers INIT");
+        this.render();
+
+        this.collection.on('reset', this.render, this);
+        this.collection.on('add', this.renderEach, this);
+    },
+    render: function() {
+        console.log("C.Views.Layers RENDER");
+
+        this.collection.each(function(item){
+
+            this.renderEach(item);
+
+        }, this);
+
+        return this;
+    },
+    renderEach: function(model){
+        var layer = new C.Views.Layer({model: model, collection: this.collection});
+
+
+        this.$el.append(layer.$el);
+
+    }
+});
+
+
+C.Views.Layer = Backbone.View.extend({
+    tagName: "li",
+    template: "#template_layer",
+    initialize: function() {
+        this.render();
+    },
+    render: function() {
+
+        var template = _.template( $(this.template).html() );
+
+        this.$el.html(template( this.model.toJSON() ));
         return this;
     }
 });
