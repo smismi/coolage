@@ -7,6 +7,18 @@ C.Collections.Items = Backbone.Collection.extend({
 
 var items = new C.Collections.Items([
     {
+        src: "test1.jpg",
+        selected: false
+    },
+    {
+        src: "test2.jpg",
+        selected: false
+    },
+    {
+        src: "test3.jpg",
+        selected: false
+    },
+    {
         src: "test.jpg",
         selected: false
     },

@@ -34,22 +34,79 @@ C.Views.Paper = Backbone.View.extend({
 C.Views.Item = Backbone.View.extend({
     initialize: function() {
         this.render();
+
+        C.EventsItem.off(C.EventsItem.CHANGE, this.updateAttrs, this);
+        C.EventsItem.on(C.EventsItem.CHANGE, this.updateAttrs, this);
+
+
+
+    },
+    selectThis: function() {
+        alert("select");
     },
     render: function() {
 
 
-        this._el = paper.image("D:/_projects/coolage/img/" + this.model.get("src"), Math.random() * 500, Math.random() * 400, 300, 240).hover(function () {
+        this._el = paper.image("D:/_projects/coolage/img/" + this.model.get("src"), Math.random() * 500, Math.random() * 400, 300, 240);
+
+        this._el.hover(function () {
             console.log("ON 2");
         }, function () {
             console.log("OFF 2");
-        });
+        }).click(function(){
+            console.log("click");
+        })
+        var _this = this;
+        this.item = paper.freeTransform(this._el,
+            {
+                draw: [ 'bbox', 'circle' ],
+                keepRatio: 'bboxCorners',
+                scale: 'bboxCorners',
+                distance: 1,
+                rotate: true
+            }, function (ft, events) {
 
-        paper.freeTransform(this._el, {draw: [ 'bbox', 'circle' ], keepRatio:  [  'bboxCorners', 'bboxSides']  }, function(ft, events) {
 
-		});
+                switch (events[0]) {
+                    case "init":
 
-        console.log("ONE ITEM draw")
+                        break;
+                    case "apply":
+
+                        break;
+                    case "drag start":
+                        C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.get("src"), true);
+
+                        break;
+                    case "drag":
+
+                        break;
+                    default :
+
+
+                }
+//                C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+
+
+
+            }
+        );
+//        startAttrs = this.model.get("attribute")
+//
+//        this.item.attrs.x = startAttrs.x || 0;
+//        this.item.attrs.y = startAttrs.y || 0;
+//        this.item.attrs.translate = startAttrs.translate || {x: 0, y: 0};
+//        this.item.attrs.scale = startAttrs.scale || { x:.4, y:.3};
+//        this.item.attrs.rotate = 11;
+//
+//        this.item.apply();
         return this;
+    },
+    updateAttrs : function(model, attrs) {
+
+        console.log("fired C.Events.CHANGE", model.get("src"), attrs)
+
+//        model.set("attribute", attrs);
     }
 });
 
@@ -61,6 +118,10 @@ C.Views.Layers = Backbone.View.extend({
 
         this.collection.on('reset', this.render, this);
         this.collection.on('add', this.renderEach, this);
+
+//
+//        C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
+//        C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
     },
     render: function() {
         console.log("C.Views.Layers RENDER");
@@ -74,10 +135,13 @@ C.Views.Layers = Backbone.View.extend({
         return this;
     },
     renderEach: function(model){
+
         var layer = new C.Views.Layer({model: model, collection: this.collection});
-
-
         this.$el.append(layer.$el);
+
+    },
+    slideTo: function(model){
+        console.log(model, "scrollto");
 
     }
 });
@@ -88,6 +152,12 @@ C.Views.Layer = Backbone.View.extend({
     template: "#template_layer",
     initialize: function() {
         this.render();
+
+        C.EventsItem.off(C.EventsItem.SELECT, this.selectMe, this);
+        C.EventsItem.on(C.EventsItem.SELECT, this.selectMe, this);
+    },
+    events: {
+        "click .delete" : "delete"
     },
     render: function() {
 
@@ -95,5 +165,12 @@ C.Views.Layer = Backbone.View.extend({
 
         this.$el.html(template( this.model.toJSON() ));
         return this;
+    },
+    delete: function(){
+        console.log("delete");
+    },
+    selectMe: function(model, state){
+        console.log(model, "selectMe", state );
     }
+
 });
