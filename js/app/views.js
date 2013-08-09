@@ -159,8 +159,10 @@ C.Views.Layers = Backbone.View.extend({
     },
     sortable: function(){
         $("#layers").sortable().bind('sortupdate', function(e, ui) {
-            console.log(ui.item);
-        });
+            var current = $("#" + ui.item.context.id)
+            var index = $('#layers li').index(current);
+            console.log(index);
+         });
 
     }
 });
@@ -181,7 +183,7 @@ C.Views.Layer = Backbone.View.extend({
 
         var template = _.template( $(this.template).html() );
 
-        this.$el.attr("id", "").html(template( this.model.toJSON() ));
+        this.$el.attr("id", "layer_" + this.model.cid).html(template( this.model.toJSON() ));
         return this;
     },
     delete: function(){
