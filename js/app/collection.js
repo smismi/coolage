@@ -7,23 +7,33 @@ C.Collections.Items = Backbone.Collection.extend({
 
 var items = new C.Collections.Items([
     {
-        src: "test1.jpg",
-        selected: false
-    },
-    {
-        src: "test2.jpg",
-        selected: false
-    },
-    {
-        src: "test3.jpg",
-        selected: false
-    },
-    {
         src: "test.jpg",
-        selected: false
+        selected: true,
+        xyz: {
+            "x": 201.96381770074368,
+            "y":318.59549758955836,
+            "size": {
+                "x":300,
+                "y":240
+            },
+            "center":{
+                "x":351.9638177007437,
+                "y":438.59549758955836
+            },
+            "rotate":90,
+            "scale":{
+                "x":1,
+                "y":1
+            },
+            "translate":{
+                "x":-38,
+                "y":-170},
+            "ratio":1
+        }
     },
     {
         src: "1dZEEv1T.jpg",
-        selected: false
+        selected: false,
+        xyz: {"x":100.47769732773304,"y":365.59108421206474,"size":{"x":300,"y":240},"center":{"x":250.47769732773304,"y":485.59108421206474},"rotate":0,"scale":{"x":0.64,"y":0.64},"translate":{"x":-153,"y":-290.2},"ratio":1}
     }
 ])

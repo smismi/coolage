@@ -49,7 +49,7 @@ C.Views.Item = Backbone.View.extend({
     render: function() {
 
 
-        this._el = paper.image("D:/_projects/coolage/img/" + this.model.get("src"), Math.random() * 500, Math.random() * 400, 300, 240);
+        this._el = paper.image("D:/_projects/coolage/img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y,  300, 240);
 
         this._el.hover(function () {
             console.log("ON 2");
@@ -58,6 +58,12 @@ C.Views.Item = Backbone.View.extend({
         }).click(function(){
             console.log("click");
         })
+
+
+
+
+
+
         var _this = this;
         this.item = paper.freeTransform(this._el,
             {
@@ -85,22 +91,29 @@ C.Views.Item = Backbone.View.extend({
                         break;
                     default :
 
+                        C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
                 }
-//                C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
 
 
             }
+
+
         );
 
+        var xyz = this.model.get("xyz");
+
+        this.item.attrs = xyz;
+
+        this.item.apply();
         return this;
     },
     updateAttrs : function(model, attrs) {
 
         console.log("fired C.Events.CHANGE", model.get("src"), attrs)
 
-//        model.set("attribute", attrs);
+        model.set("xyz", attrs);
     },
     setSelect : function(modelCid, state) {
         console.log(this.model, modelCid, "setSelect", state );
