@@ -59,11 +59,6 @@ C.Views.Item = Backbone.View.extend({
             console.log("click");
         })
 
-
-
-
-
-
         var _this = this;
         this.item = paper.freeTransform(this._el,
             {
@@ -132,6 +127,7 @@ C.Views.Layers = Backbone.View.extend({
     initialize: function() {
         console.log("C.Views.Layers INIT");
         this.render();
+        this.sortable();
 
         this.collection.on('reset', this.render, this);
         this.collection.on('add', this.renderEach, this);
@@ -160,6 +156,12 @@ C.Views.Layers = Backbone.View.extend({
     slideTo: function(model){
         console.log(model, "scrollto");
 
+    },
+    sortable: function(){
+        $("#layers").sortable().bind('sortupdate', function(e, ui) {
+            console.log(ui.item);
+        });
+
     }
 });
 
@@ -179,7 +181,7 @@ C.Views.Layer = Backbone.View.extend({
 
         var template = _.template( $(this.template).html() );
 
-        this.$el.html(template( this.model.toJSON() ));
+        this.$el.attr("id", "").html(template( this.model.toJSON() ));
         return this;
     },
     delete: function(){
