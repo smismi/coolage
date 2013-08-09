@@ -38,6 +38,8 @@ C.Views.Item = Backbone.View.extend({
         C.EventsItem.off(C.EventsItem.CHANGE, this.updateAttrs, this);
         C.EventsItem.on(C.EventsItem.CHANGE, this.updateAttrs, this);
 
+        C.EventsItem.off(C.EventsItem.SELECT, this.setSelect,  this);
+        C.EventsItem.on(C.EventsItem.SELECT, this.setSelect, this);
 
 
     },
@@ -75,7 +77,7 @@ C.Views.Item = Backbone.View.extend({
 
                         break;
                     case "drag start":
-                        C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.get("src"), true);
+                        C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
 
                         break;
                     case "drag":
@@ -91,15 +93,7 @@ C.Views.Item = Backbone.View.extend({
 
             }
         );
-//        startAttrs = this.model.get("attribute")
-//
-//        this.item.attrs.x = startAttrs.x || 0;
-//        this.item.attrs.y = startAttrs.y || 0;
-//        this.item.attrs.translate = startAttrs.translate || {x: 0, y: 0};
-//        this.item.attrs.scale = startAttrs.scale || { x:.4, y:.3};
-//        this.item.attrs.rotate = 11;
-//
-//        this.item.apply();
+
         return this;
     },
     updateAttrs : function(model, attrs) {
@@ -107,6 +101,16 @@ C.Views.Item = Backbone.View.extend({
         console.log("fired C.Events.CHANGE", model.get("src"), attrs)
 
 //        model.set("attribute", attrs);
+    },
+    setSelect : function(modelCid, state) {
+        console.log(this.model, modelCid, "setSelect", state );
+
+        if(modelCid === this.model.cid) {
+            this.model.set("selected", true);
+        } else {
+            this.model.set("selected", false);
+        }
+
     }
 });
 
@@ -119,9 +123,9 @@ C.Views.Layers = Backbone.View.extend({
         this.collection.on('reset', this.render, this);
         this.collection.on('add', this.renderEach, this);
 
-//
-//        C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
-//        C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
+
+        C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
+        C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
     },
     render: function() {
         console.log("C.Views.Layers RENDER");
@@ -152,8 +156,7 @@ C.Views.Layer = Backbone.View.extend({
     template: "#template_layer",
     initialize: function() {
         this.render();
-
-        C.EventsItem.off(C.EventsItem.SELECT, this.selectMe, this);
+        C.EventsItem.off(C.EventsItem.SELECT, this.selectMe,  this);
         C.EventsItem.on(C.EventsItem.SELECT, this.selectMe, this);
     },
     events: {
@@ -169,8 +172,14 @@ C.Views.Layer = Backbone.View.extend({
     delete: function(){
         console.log("delete");
     },
-    selectMe: function(model, state){
-        console.log(model, "selectMe", state );
+    selectMe: function(modelCid, state){
+        console.log(this.model, modelCid, "selectMe", state );
+
+        if(modelCid === this.model.cid) {
+            this.$el.css("border", "1px solid red")
+        } else {
+            this.$el.css("border", "1px solid green")
+        }
     }
 
 });
