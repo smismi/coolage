@@ -29,9 +29,15 @@ var items = new C.Collections.Items([
                 "x":-38,
                 "y":-170},
             "ratio":1
-        }
+        },
+        order: 0
     },
     {
-        src: "1dZEEv1T.jpg", selected: false, xyz: {"x":100.47769732773304,"y":365.59108421206474,"size":{"x":300,"y":240},"center":{"x":250.47769732773304,"y":485.59108421206474},"rotate":0,"scale":{"x":0.64,"y":0.64},"translate":{"x":-153,"y":-290.2},"ratio":1}
+        src: "1dZEEv1T.jpg", selected: false, xyz: {"x":100.47769732773304,"y":365.59108421206474,"size":{"x":300,"y":240},"center":{"x":250.47769732773304,"y":485.59108421206474},"rotate":0,"scale":{"x":0.64,"y":0.64},"translate":{"x":-153,"y":-290.2},"ratio":1},
+        order: 1
     }
 ])
+
+items.comparator = function(item) {
+    return item.get("order");
+};

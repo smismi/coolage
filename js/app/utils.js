@@ -1,7 +1,7 @@
 //UTILS
-C.Utils.A = function (a) {
-
-	var b = a
-	return  b;
+C.Utils.GetMaxOrder = function (items) {
+    return items.max(function(m){
+        return m.get('order');
+    });
 }
 

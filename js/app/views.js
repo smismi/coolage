@@ -127,10 +127,9 @@ C.Views.Layers = Backbone.View.extend({
     initialize: function() {
         console.log("C.Views.Layers INIT");
         this.render();
-        this.sortable();
 
         this.collection.on('reset', this.render, this);
-        this.collection.on('add', this.renderEach, this);
+        this.collection.on('add', this.render, this);
 
 
         C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
@@ -138,19 +137,20 @@ C.Views.Layers = Backbone.View.extend({
     },
     render: function() {
         console.log("C.Views.Layers RENDER");
-
+        this.$el.html("");
         this.collection.each(function(item){
 
             this.renderEach(item);
 
         }, this);
 
+        this.sortable();
         return this;
     },
     renderEach: function(model){
 
         var layer = new C.Views.Layer({model: model, collection: this.collection});
-        this.$el.append(layer.$el);
+        this.$el.prepend(layer.$el);
 
     },
     slideTo: function(model){
