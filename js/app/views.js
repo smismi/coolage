@@ -5,7 +5,7 @@
 C.Views.Paper = Backbone.View.extend({
     initialize: function() {
         this.render();
-        this.collection.on('reset', this.render, this);
+//        this.collection.on('reset', this.render, this);
         this.collection.on('add', this.renderEach, this);
     },
     render: function() {
@@ -52,11 +52,8 @@ C.Views.Item = Backbone.View.extend({
         this._el = paper.image("D:/_projects/coolage/img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y,  300, 240);
 
         this._el.hover(function () {
-            console.log("ON 2");
         }, function () {
-            console.log("OFF 2");
         }).click(function(){
-            console.log("click");
         })
 
         var _this = this;
@@ -105,14 +102,9 @@ C.Views.Item = Backbone.View.extend({
         return this;
     },
     updateAttrs : function(model, attrs) {
-
-        console.log("fired C.Events.CHANGE", model.get("src"), attrs)
-
         model.set("xyz", attrs);
     },
     setSelect : function(modelCid, state) {
-        console.log(this.model, modelCid, "setSelect", state );
-
         if(modelCid === this.model.cid) {
             this.model.set("selected", true);
         } else {
@@ -134,9 +126,11 @@ C.Views.Layers = Backbone.View.extend({
 
         C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
         C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
+
+        C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
+        C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
     },
     render: function() {
-        console.log("C.Views.Layers RENDER");
         this.$el.html("");
         this.collection.each(function(item){
 
@@ -150,19 +144,27 @@ C.Views.Layers = Backbone.View.extend({
     renderEach: function(model){
 
         var layer = new C.Views.Layer({model: model, collection: this.collection});
-        this.$el.prepend(layer.$el);
+        this.$el.append(layer.$el);
 
     },
     slideTo: function(model){
-        console.log(model, "scrollto");
 
+    },
+    layerSort: function(){
+        var _collection = [];
+        $("#layers li").each(function(index){
+            var _id = $(this).data("cid");
+            _collection.push(items.get(_id).set("order", index));
+        })
+        items.reset(_collection);
     },
     sortable: function(){
         $("#layers").sortable().bind('sortupdate', function(e, ui) {
             var current = $("#" + ui.item.context.id)
             var index = $('#layers li').index(current);
-            console.log(index);
-         });
+            C.EventsItem.trigger(C.EventsItem.LAYERSORT);
+
+        });
 
     }
 });
@@ -183,15 +185,13 @@ C.Views.Layer = Backbone.View.extend({
 
         var template = _.template( $(this.template).html() );
 
-        this.$el.attr("id", "layer_" + this.model.cid).html(template( this.model.toJSON() ));
+        this.$el.attr({"id": "layer_" + this.model.cid, "data-cid": this.model.cid}).html(template( this.model.toJSON() ));
         return this;
     },
     delete: function(){
         console.log("delete");
     },
     selectMe: function(modelCid, state){
-        console.log(this.model, modelCid, "selectMe", state );
-
         if(modelCid === this.model.cid) {
             this.$el.css("border", "1px solid red")
         } else {

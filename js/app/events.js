@@ -9,16 +9,8 @@ var C = {
 
 C.EventsItem = _.extend({
     // locals
-    CHANGE: "change",
-    SELECT: "select"
+    CHANGE:     "change",
+    SELECT:     "select",
+    LAYERSORT:  "layersort"
 }, Backbone.Events);
 
-
-//W.EventsLocals = _.extend({
-//	// locals
-//}, Backbone.Events);
-//
-//
-//W.EventsDays = _.extend({
-//
-//}, Backbone.Events);
