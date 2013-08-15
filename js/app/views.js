@@ -1,202 +1,200 @@
 //VIEWS
 
 
-
 C.Views.Paper = Backbone.View.extend({
-    initialize: function() {
-        this.render();
+	initialize: function () {
+		this.render();
 //        this.collection.on('reset', this.render, this);
-        this.collection.on('add', this.renderEach, this);
-    },
-    render: function() {
+		this.collection.on('add', this.renderEach, this);
+	},
+	render: function () {
 
 
 //        TODO: вынести во вьюху
-        c = document.getElementById("cnvs");
-        paper = Raphael(c, 1000, 1000);
+		c = document.getElementById("cnvs");
+		paper = Raphael(c, 1000, 1000);
 
-        this.collection.each(function(item){
+		this.collection.each(function (item) {
 
-            this.renderEach(item);
+			this.renderEach(item);
 
-        }, this);
+		}, this);
 
 
-        console.log("ITEMS draw")
-        return this;
-    },
-    renderEach: function(model){
-        var day = new C.Views.Item({model: model, collection: this.collection});
+		console.log("ITEMS draw")
+		return this;
+	},
+	renderEach: function (model) {
+		var day = new C.Views.Item({model: model, collection: this.collection});
 
-    }
+	}
 });
 
 C.Views.Item = Backbone.View.extend({
-    initialize: function() {
-        this.render();
+	initialize: function () {
+		this.render();
 
-        C.EventsItem.off(C.EventsItem.CHANGE, this.updateAttrs, this);
-        C.EventsItem.on(C.EventsItem.CHANGE, this.updateAttrs, this);
+		C.EventsItem.off(C.EventsItem.CHANGE, this.updateAttrs, this);
+		C.EventsItem.on(C.EventsItem.CHANGE, this.updateAttrs, this);
 
-        C.EventsItem.off(C.EventsItem.SELECT, this.setSelect,  this);
-        C.EventsItem.on(C.EventsItem.SELECT, this.setSelect, this);
-
-
-    },
-    selectThis: function() {
-        alert("select");
-    },
-    render: function() {
+		C.EventsItem.off(C.EventsItem.SELECT, this.setSelect, this);
+		C.EventsItem.on(C.EventsItem.SELECT, this.setSelect, this);
 
 
-        this._el = paper.image("D:/_projects/coolage/img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y,  300, 240);
-
-        this._el.hover(function () {
-        }, function () {
-        }).click(function(){
-        })
-
-        var _this = this;
-        this.item = paper.freeTransform(this._el,
-            {
-                draw: [ 'bbox', 'circle' ],
-                keepRatio: 'bboxCorners',
-                scale: 'bboxCorners',
-                distance: 1,
-                rotate: true
-            }, function (ft, events) {
+	},
+	selectThis: function () {
+		alert("select");
+	},
+	render: function () {
 
 
-                switch (events[0]) {
-                    case "init":
+		this._el = paper.image("img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y, 300, 240);
 
-                        break;
-                    case "apply":
+		this._el.hover(function () {
+		},function () {
+		}).click(function () {
+			})
 
-                        break;
-                    case "drag start":
-                        C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
-
-                        break;
-                    case "drag":
-
-                        break;
-                    default :
-
-                        C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
-
-                }
+		var _this = this;
+		this.item = paper.freeTransform(this._el,
+			{
+				draw: [ 'bbox', 'circle' ],
+				keepRatio: 'bboxCorners',
+				scale: 'bboxCorners',
+				distance: 1,
+				rotate: true
+			}, function (ft, events) {
 
 
+				switch (events[0]) {
+					case "init":
 
-            }
+						break;
+					case "apply":
+
+						break;
+					case "drag start":
+						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+
+						break;
+					case "drag":
+
+						break;
+					default :
+
+						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+
+				}
 
 
-        );
+			}
 
-        var xyz = this.model.get("xyz");
 
-        this.item.attrs = xyz;
+		);
 
-        this.item.apply();
-        return this;
-    },
-    updateAttrs : function(model, attrs) {
-        model.set("xyz", attrs);
-    },
-    setSelect : function(modelCid, state) {
-        if(modelCid === this.model.cid) {
-            this.model.set("selected", true);
-        } else {
-            this.model.set("selected", false);
-        }
+		var xyz = this.model.get("xyz");
 
-    }
+		this.item.attrs = xyz;
+
+		this.item.apply();
+		return this;
+	},
+	updateAttrs: function (model, attrs) {
+		model.set("xyz", attrs);
+	},
+	setSelect: function (modelCid, state) {
+		if (modelCid === this.model.cid) {
+			this.model.set("selected", true);
+		} else {
+			this.model.set("selected", false);
+		}
+
+	}
 });
 
 C.Views.Layers = Backbone.View.extend({
-    el: "#layers",
-    initialize: function() {
-        console.log("C.Views.Layers INIT");
-        this.render();
+	el: "#layers",
+	initialize: function () {
+		console.log("C.Views.Layers INIT");
+		this.render();
 
-        this.collection.on('reset', this.render, this);
-        this.collection.on('add', this.render, this);
+		this.collection.on('reset', this.render, this);
+		this.collection.on('add', this.render, this);
 
 
-        C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
-        C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
+		C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
+		C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
 
-        C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
-        C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
-    },
-    render: function() {
-        this.$el.html("");
-        this.collection.each(function(item){
+		C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
+		C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
+	},
+	render: function () {
+		this.$el.html("");
+		this.collection.each(function (item) {
 
-            this.renderEach(item);
+			this.renderEach(item);
 
-        }, this);
+		}, this);
 
-        this.sortable();
-        return this;
-    },
-    renderEach: function(model){
+		this.sortable();
+		return this;
+	},
+	renderEach: function (model) {
 
-        var layer = new C.Views.Layer({model: model, collection: this.collection});
-        this.$el.append(layer.$el);
+		var layer = new C.Views.Layer({model: model, collection: this.collection});
+		this.$el.append(layer.$el);
 
-    },
-    slideTo: function(model){
+	},
+	slideTo: function (model) {
 
-    },
-    layerSort: function(){
-        var _collection = [];
-        $("#layers li").each(function(index){
-            var _id = $(this).data("cid");
-            _collection.push(items.get(_id).set("order", index));
-        })
-        items.reset(_collection);
-    },
-    sortable: function(){
-        $("#layers").sortable().bind('sortupdate', function(e, ui) {
-            var current = $("#" + ui.item.context.id)
-            var index = $('#layers li').index(current);
-            C.EventsItem.trigger(C.EventsItem.LAYERSORT);
+	},
+	layerSort: function () {
+		var _collection = [];
+		$("#layers li").each(function (index) {
+			var _id = $(this).data("cid");
+			_collection.push(items.get(_id).set("order", index));
+		})
+		items.reset(_collection);
+	},
+	sortable: function () {
+		$("#layers").sortable().bind('sortupdate', function (e, ui) {
+			var current = $("#" + ui.item.context.id)
+			var index = $('#layers li').index(current);
+			C.EventsItem.trigger(C.EventsItem.LAYERSORT);
 
-        });
+		});
 
-    }
+	}
 });
 
 
 C.Views.Layer = Backbone.View.extend({
-    tagName: "li",
-    template: "#template_layer",
-    initialize: function() {
-        this.render();
-        C.EventsItem.off(C.EventsItem.SELECT, this.selectMe,  this);
-        C.EventsItem.on(C.EventsItem.SELECT, this.selectMe, this);
-    },
-    events: {
-        "click .delete" : "delete"
-    },
-    render: function() {
+	tagName: "li",
+	template: "#template_layer",
+	initialize: function () {
+		this.render();
+		C.EventsItem.off(C.EventsItem.SELECT, this.selectMe, this);
+		C.EventsItem.on(C.EventsItem.SELECT, this.selectMe, this);
+	},
+	events: {
+		"click .delete": "delete"
+	},
+	render: function () {
 
-        var template = _.template( $(this.template).html() );
+		var template = _.template($(this.template).html());
 
-        this.$el.attr({"id": "layer_" + this.model.cid, "data-cid": this.model.cid}).html(template( this.model.toJSON() ));
-        return this;
-    },
-    delete: function(){
-        console.log("delete");
-    },
-    selectMe: function(modelCid, state){
-        if(modelCid === this.model.cid) {
-            this.$el.css("border", "1px solid red")
-        } else {
-            this.$el.css("border", "1px solid green")
-        }
-    }
+		this.$el.attr({"id": "layer_" + this.model.cid, "data-cid": this.model.cid}).html(template(this.model.toJSON()));
+		return this;
+	},
+	delete: function () {
+		console.log("delete");
+	},
+	selectMe: function (modelCid, state) {
+		if (modelCid === this.model.cid) {
+			this.$el.css("border", "1px solid red")
+		} else {
+			this.$el.css("border", "1px solid green")
+		}
+	}
 
 });
