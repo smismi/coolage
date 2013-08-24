@@ -15,13 +15,14 @@
     <script src="js/raphael.free_transform.js"></script>
     <script src="js/jquery.sortable.js"></script>
 
+
     <script src="js/app/events.js"></script>
+    <script src="js/app/utils.js"></script>
     <script src="js/app/models.js"></script>
     <script src="js/app/views.js"></script>
     <script src="js/app/collection.js"></script>
     <script src="js/app/app.js"></script>
 
-    <script src="js/app/utils.js"></script>
 
     <link rel="stylesheet" href="css/style.css" type="text/css">
 
@@ -46,6 +47,9 @@
         <%= order %>
         <%= selected %>
         <%= src %>
+        <%= flattenObject() %>
+
+
 
         <i class="delete">delete</i>
     </script>

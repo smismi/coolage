@@ -22,8 +22,9 @@ body {
 }
 
 #layers_list ol li {
-             padding: 12px;
+    padding: 12px;
     border-width: 12px;
+    word-wrap:break-word
 }
 #cnvs {
     background: #fff;

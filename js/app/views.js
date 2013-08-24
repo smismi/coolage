@@ -78,6 +78,8 @@ C.Views.Item = Backbone.View.extend({
 
 						break;
 					case "drag":
+						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
 
 						break;
 					default :
@@ -100,6 +102,7 @@ C.Views.Item = Backbone.View.extend({
 		return this;
 	},
 	updateAttrs: function (model, attrs) {
+
 		model.set("xyz", attrs);
 	},
 	setSelect: function (modelCid, state) {
@@ -118,18 +121,20 @@ C.Views.Layers = Backbone.View.extend({
 		console.log("C.Views.Layers INIT");
 		this.render();
 
+		this.collection.on('change', this.render, this);
 		this.collection.on('reset', this.render, this);
 		this.collection.on('add', this.render, this);
 
 
-		C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
-		C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
-
-		C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
-		C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
+//
+//		C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
+//		C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
+//
+//		C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
+//		C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
 	},
 	render: function () {
-		this.$el.html("");
+ 		this.$el.html("");
 		this.collection.each(function (item) {
 
 			this.renderEach(item);
@@ -175,6 +180,10 @@ C.Views.Layer = Backbone.View.extend({
 		this.render();
 		C.EventsItem.off(C.EventsItem.SELECT, this.selectMe, this);
 		C.EventsItem.on(C.EventsItem.SELECT, this.selectMe, this);
+
+		C.EventsItem.off(C.EventsItem.CHANGE, this.colorMe, this);
+		C.EventsItem.on(C.EventsItem.CHANGE, this.colorMe, this);
+
 	},
 	events: {
 		"click .delete": "delete"
@@ -191,10 +200,15 @@ C.Views.Layer = Backbone.View.extend({
 	},
 	selectMe: function (modelCid, state) {
 		if (modelCid === this.model.cid) {
-			this.$el.css("border", "1px solid red")
+			this.$el.css("background", "red")
 		} else {
-			this.$el.css("border", "1px solid green")
+			this.$el.css("background", "green")
 		}
+	},
+	colorMe: function (modelCid, state) {
+
+		this.render();
+
 	}
 
 });
