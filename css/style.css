@@ -24,10 +24,24 @@ body {
 #layers_list ol li {
     padding: 12px;
     border-width: 12px;
-    word-wrap:break-word
+    word-wrap:break-word;
+    height: 100px;
+    overflow: hidden;
 }
 #cnvs {
     background: #fff;
     float: left;
     margin: 0;
+}
+
+.sortable-dragging {
+    height: 100px;
+    overflow: hidden;
+    background: #f60;
+}
+
+.sortable-placeholder {
+    height: 100px;
+    overflow: hidden;
+    background: #50f;
 }
