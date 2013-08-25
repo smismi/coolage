@@ -5,26 +5,28 @@
     <meta charset="utf-8">
         <title>query._</title>
 
-    <script src="js/jquery.2.0.js"></script>
+    <script src="/js/jquery.2.0.js"></script>
 
-    <script src="js/underscore.js"></script>
+    <script src="/js/underscore.js"></script>
 
-    <script src="js/backbone.js"></script>
+    <script src="/js/backbone.js"></script>
 
-    <script src="js/raphael.js"></script>
-    <script src="js/raphael.free_transform.js"></script>
-    <script src="js/jquery.sortable.js"></script>
+    <script src="/js/raphael.js"></script>
+    <script src="/js/raphael.free_transform.js"></script>
+    <script src="/js/jquery.sortable.js"></script>
+    <!--<script src="/js/dropzone.js"></script>-->
 
 
-    <script src="js/app/events.js"></script>
-    <script src="js/app/utils.js"></script>
-    <script src="js/app/models.js"></script>
-    <script src="js/app/views.js"></script>
-    <script src="js/app/collection.js"></script>
-    <script src="js/app/app.js"></script>
+    <script src="/js/app/events.js"></script>
+    <script src="/js/app/utils.js"></script>
+    <script src="/js/app/models.js"></script>
+    <script src="/js/app/views.js"></script>
+    <script src="/js/app/collection.js"></script>
+    <script src="/js/app/app.js"></script>
 
 
     <link rel="stylesheet" href="css/style.css" type="text/css">
+    <!--<link rel="stylesheet" href="css/dropzone.css" type="text/css">-->
 
 </head>
 <body>   
@@ -33,6 +35,9 @@
 <div id="main"> 
     <h1>COOLAGE</h1>
 
+    <div id="reset">
+        <input type="button" class="reset" value="reset"/>
+    </div>
 
     <aside id="layers_list">
         <ol id="layers"/>
@@ -42,7 +47,12 @@
     </figure>
 
 
-     
+    <form action="" method="post" enctype="multipart/form-data">
+
+    </form>
+
+    <!--<form id="my-awesome-dropzone" action="/file-upload" class="dropzone" method="post" enctype="multipart/form-data"></form>-->
+
     <script id="template_layer" type="text/template">
         <%= order %>
         <%= selected %>
@@ -51,7 +61,7 @@
 
 
 
-        <i class="delete">delete</i>
+        <i class="delete">X</i>
     </script>
 
 </body>

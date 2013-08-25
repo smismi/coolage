@@ -2,7 +2,11 @@
 
 
 C.Collections.Items = Backbone.Collection.extend({
-    model: C.Models.Item
+    model: C.Models.Item,
+	sortByField: function(fieldName) {
+		this.sort_key = fieldName;
+		this.sort();
+	}
 })
 
 var items = new C.Collections.Items([

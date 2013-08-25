@@ -6,6 +6,9 @@ C.Views.Paper = Backbone.View.extend({
 		this.render();
 //        this.collection.on('reset', this.render, this);
 		this.collection.on('add', this.renderEach, this);
+		this.collection.on('sort', this.rerender, this);
+
+
 	},
 	render: function () {
 
@@ -26,7 +29,16 @@ C.Views.Paper = Backbone.View.extend({
 	},
 	renderEach: function (model) {
 		var day = new C.Views.Item({model: model, collection: this.collection});
+ 	},
+	rerender: function (model) {
+ 		console.log("sort");
 
+		paper.clear();
+		this.collection.each(function (item) {
+
+			this.renderEach(item);
+
+		}, this);
 	}
 });
 
@@ -123,18 +135,23 @@ C.Views.Layers = Backbone.View.extend({
 
 		this.collection.on('change', this.render, this);
 		this.collection.on('reset', this.render, this);
-		this.collection.on('add', this.render, this);
+		this.collection.on('sort', this.render, this);
 
 
 //
 //		C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
 //		C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
 //
-//		C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
-//		C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
+		C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
+		C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
+
+
+
+		new C.Views.Reset();
 	},
 	render: function () {
- 		this.$el.html("");
+
+  		this.$el.html("");
 		this.collection.each(function (item) {
 
 			this.renderEach(item);
@@ -156,15 +173,28 @@ C.Views.Layers = Backbone.View.extend({
 	layerSort: function () {
 		var _collection = [];
 		$("#layers li").each(function (index) {
+
 			var _id = $(this).data("cid");
-			_collection.push(items.get(_id).set("order", index));
-		})
-		items.reset(_collection);
+
+			items.get(_id).set("order", index);
+
+			console.log(_id, index);
+
+
+ 		})
+
+		items.sortByField("order");
+
+
+
+//		items.reset(_collection);
 	},
 	sortable: function () {
-		$("#layers").sortable().bind('sortupdate', function (e, ui) {
+		$("#layers").sortable().unbind('sortupdate').bind('sortupdate', function (e, ui) {
+
 			var current = $("#" + ui.item.context.id)
 			var index = $('#layers li').index(current);
+
 			C.EventsItem.trigger(C.EventsItem.LAYERSORT);
 
 		});
@@ -173,6 +203,16 @@ C.Views.Layers = Backbone.View.extend({
 });
 
 
+C.Views.Reset = Backbone.View.extend({
+	el: "#reset",
+	events: {
+		"click .reset" : "reset"
+	},
+	reset: function () {
+		console.log("reset");
+	}
+
+});
 C.Views.Layer = Backbone.View.extend({
 	tagName: "li",
 	template: "#template_layer",
