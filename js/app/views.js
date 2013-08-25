@@ -6,7 +6,10 @@ C.Views.Paper = Backbone.View.extend({
 		this.render();
 //        this.collection.on('reset', this.render, this);
 		this.collection.on('add', this.renderEach, this);
-		this.collection.on('sort', this.rerender, this);
+//		this.collection.on('sort', this.rerender, this);
+
+		this.collection.on('sort', this.frontToEach, this);
+
 
 
 	},
@@ -30,15 +33,10 @@ C.Views.Paper = Backbone.View.extend({
 	renderEach: function (model) {
 		var day = new C.Views.Item({model: model, collection: this.collection});
  	},
-	rerender: function (model) {
- 		console.log("sort");
-
-		paper.clear();
-		this.collection.each(function (item) {
-
-			this.renderEach(item);
-
-		}, this);
+	frontToEach: function () {
+		this.collection.each(function (model) {
+			C.EventsItem.trigger(C.EventsItem.TOFRONT, model.cid, true);
+ 		}, this);
 	}
 });
 
@@ -53,9 +51,11 @@ C.Views.Item = Backbone.View.extend({
 		C.EventsItem.on(C.EventsItem.SELECT, this.setSelect, this);
 
 
-	},
-	selectThis: function () {
-		alert("select");
+		C.EventsItem.off(C.EventsItem.TOFRONT, this.toFront, this);
+		C.EventsItem.on(C.EventsItem.TOFRONT, this.toFront, this);
+
+
+
 	},
 	render: function () {
 
@@ -111,6 +111,7 @@ C.Views.Item = Backbone.View.extend({
 		this.item.attrs = xyz;
 
 		this.item.apply();
+
 		return this;
 	},
 	updateAttrs: function (model, attrs) {
@@ -123,6 +124,16 @@ C.Views.Item = Backbone.View.extend({
 		} else {
 			this.model.set("selected", false);
 		}
+
+	},
+	toFront: function (modelCid) {
+//		    return;
+//		    debugger;
+		if (modelCid === this.model.cid) {
+			this._el.toBack();
+// 			this.item.apply();
+		}
+
 
 	}
 });
@@ -178,7 +189,7 @@ C.Views.Layers = Backbone.View.extend({
 
 			items.get(_id).set("order", index);
 
-			console.log(_id, index);
+//			console.log(_id, index);
 
 
  		})
