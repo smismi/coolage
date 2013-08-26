@@ -3,14 +3,12 @@
 
 C.Views.Paper = Backbone.View.extend({
 	initialize: function () {
+
 		this.render();
-//        this.collection.on('reset', this.render, this);
+
 		this.collection.on('add', this.renderEach, this);
-//		this.collection.on('sort', this.rerender, this);
 
 		this.collection.on('sort', this.frontToEach, this);
-
-
 
 	},
 	render: function () {
@@ -24,6 +22,7 @@ C.Views.Paper = Backbone.View.extend({
 
 			this.renderEach(item);
 
+
 		}, this);
 
 
@@ -34,9 +33,14 @@ C.Views.Paper = Backbone.View.extend({
 		var day = new C.Views.Item({model: model, collection: this.collection});
  	},
 	frontToEach: function () {
+
 		this.collection.each(function (model) {
+
 			C.EventsItem.trigger(C.EventsItem.TOFRONT, model.cid, true);
- 		}, this);
+
+		}, this);
+
+
 	}
 });
 
@@ -59,15 +63,16 @@ C.Views.Item = Backbone.View.extend({
 	},
 	render: function () {
 
-
+		var _this = this;
 		this._el = paper.image("img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y, 300, 240);
 
 		this._el.hover(function () {
 		},function () {
 		}).click(function () {
-			})
+// 			_this._el.toFront();
+		})
 
-		var _this = this;
+
 		this.item = paper.freeTransform(this._el,
 			{
 				draw: [ 'bbox', 'circle' ],
@@ -127,11 +132,11 @@ C.Views.Item = Backbone.View.extend({
 
 	},
 	toFront: function (modelCid) {
-//		    return;
-//		    debugger;
+
 		if (modelCid === this.model.cid) {
-			this._el.toBack();
-// 			this.item.apply();
+
+			this._el.toFront();
+
 		}
 
 
@@ -149,10 +154,9 @@ C.Views.Layers = Backbone.View.extend({
 		this.collection.on('sort', this.render, this);
 
 
-//
 //		C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
 //		C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
-//
+
 		C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
 		C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
 
