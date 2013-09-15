@@ -254,11 +254,11 @@ C.Views.Layer = Backbone.View.extend({
 		console.log("delete");
 	},
 	selectMe: function (modelCid, state) {
-		if (modelCid === this.model.cid) {
-			this.$el.css("background", "red")
-		} else {
-			this.$el.css("background", "green")
-		}
+//		if (modelCid === this.model.cid) {
+//			this.$el.addClass("selected");
+//		} else {
+//			this.$el.removeClass("selected");
+//		}
 	},
 	colorMe: function (modelCid, state) {
 
