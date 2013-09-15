@@ -69,21 +69,26 @@ C.Views.Item = Backbone.View.extend({
 		this._el.hover(function () {
 		},function () {
 		}).click(function () {
-// 			_this._el.toFront();
-		})
+			C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+
+		});
 
 
 		this.item = paper.freeTransform(this._el,
 			{
-				draw: [ 'bbox', 'circle' ],
-				keepRatio: 'bboxCorners',
-				scale: 'bboxCorners',
-				distance: 1,
-				rotate: true
+				draw: [ 'bbox' ],
+				keepRatio: [ 'axisX', 'axisY', 'bboxCorners'],
+				scale: [ 'axisX', 'axisY', 'bboxCorners'],
+				distance: 1.1,
+				rotate: [ 'axisX', 'axisY', 'bboxSides' ],
+				attrs: { fill: "#fff", stroke: "#333",
+
+				},
+				size: 4
+
 			}, function (ft, events) {
 
-
-				switch (events[0]) {
+ 				switch (events[0]) {
 					case "init":
 
 						break;
@@ -91,17 +96,22 @@ C.Views.Item = Backbone.View.extend({
 
 						break;
 					case "drag start":
-						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+//						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+
+						break;
+					case "click":
+//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+//						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
 
 						break;
 					case "drag":
-						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
-						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+//						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
 
 						break;
 					default :
 
-						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
 				}
 
@@ -111,6 +121,7 @@ C.Views.Item = Backbone.View.extend({
 
 		);
 
+		this.item.hideHandles();
 		var xyz = this.model.get("xyz");
 
 		this.item.attrs = xyz;
@@ -126,7 +137,13 @@ C.Views.Item = Backbone.View.extend({
 	setSelect: function (modelCid, state) {
 		if (modelCid === this.model.cid) {
 			this.model.set("selected", true);
+			console.log("cllick");
+			this.item.showHandles();
 		} else {
+			console.log("cllick");
+
+
+			this.item.hideHandles();
 			this.model.set("selected", false);
 		}
 
