@@ -73,7 +73,6 @@ C.Views.Item = Backbone.View.extend({
 
 		});
 
-
 		this.item = paper.freeTransform(this._el,
 			{
 				draw: [ 'bbox' ],
@@ -87,8 +86,12 @@ C.Views.Item = Backbone.View.extend({
 				size: 4
 
 			}, function (ft, events) {
+				var _path = 'M 0 0 l 200 0 l 0 200  l -200 0  z';
 
- 				switch (events[0]) {
+				_this._el.attr({"clip-path": _path});
+
+
+				switch (events[0]) {
 					case "init":
 
 						break;
