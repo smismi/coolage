@@ -3,8 +3,8 @@ $(document).ready(function () {
 	var c = document.getElementById("cnvs");
 	var paper = Raphael(c, 1000, 1000);
 	var image, image1, path;
-    var _path = 'M 0 0 l 200 0 l 0 100 l -100 0  z';
-//    var _path = 'M 169.57460021972656 15.106499671936035 C 169.57460021972656 15.106499671936035 282.8146057128906 57.446502685546875 282.8146057128906 57.446502685546875 C 282.8146057128906 57.446502685546875 234.4145965576172 186.89649963378906 234.4145965576172 186.89649963378906 C 234.4145965576172 186.89649963378906 177.79458618164062 165.72650146484375 177.79458618164062 165.72650146484375 C 177.79458618164062 165.72650146484375 169.57460021972656 15.106499671936035 169.57460021972656 15.106499671936035 Z';
+//    var _path = 'M 0 0 l 200 0 l 0 100  l -100 0  z';
+    var _path = 'M 169.57460021972656 15.106499671936035 C 1449.57460021972656 15.106499671936035 282.8146057128906 57.446502685546875 282.8146057128906 57.446502685546875 C 282.8146057128906 57.446502685546875 234.4145965576172 186.89649963378906 234.4145965576172 186.89649963378906 C 234.4145965576172 186.89649963378906 177.79458618164062 165.72650146484375 177.79458618164062 165.72650146484375 C 177.79458618164062 165.72650146484375 169.57460021972656 15.106499671936035 169.57460021972656 15.106499671936035 Z';
 	Raphael(function () {
 
 		img = document.getElementById("photo");
@@ -17,38 +17,24 @@ $(document).ready(function () {
 				console.log("OFF 2");
 			});
 
-		path = paper.path(_path);
-		image1.attr({"clip-rect": _path});
+//		path = paper.path(_path);
 
-		// Add freeTransform with options and callback
-        _ft = paper.freeTransform(path, { keepRatio: true }, function(_ft, events) {
-            console.log(_ft.attrs);
-            _new = flatten_transformations(path,true)
-//            console.log(_new);
-////ТУТ
-            image1.attr({"clip-path": _new});
-//            image1.attr({"clip-path": 'M 0 0 l 200 0 l 0 ' + Math.random() * 100 + ' l -100 0  z'});
-//
-            ft.attrs = _ft.attrs;
-            ft.apply();
-//
-//
-////            _path = ft.subject.attrs.path.toLocaleString();
-////			console.log(ft.subject.attrs.path.toLocaleString());
+//		_new = flatten_transformations(path,true)
+
+
+
+
+
+        _ft = paper.freeTransform(image1, { draw: [ 'bbox', 'circle' ], keepRatio:  [ 'circle',  'bboxCorners', 'bboxSides'], keepRatio: true }, function(_ft, events) {
+
+//			_new = flatten_transformations(path,true)
+
+			image1.attr({"clip-path": _path});
+
+
         });
-		ft = paper.freeTransform(image1, {draw: [ 'bbox', 'circle' ], keepRatio:  [  'bboxCorners', 'bboxSides']  }, function(ft, events) {
 
-//            _path = ft.subject.attrs.path.toLocaleString();
-//			console.log(ft.subject.attrs.path.toLocaleString());
-		});
 
-//		// Change options on the fly
-//		ft.setOpts({ keepRatio: false });
-
-//
-//
-//		var anim = Raphael.animation({transform: "r30,500,500s0.5,1r45"}, 1000, "linear").repeat(1);
-//		image.animate(anim);
 
 
 	});
