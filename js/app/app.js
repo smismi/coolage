@@ -22,10 +22,19 @@ $(document).ready(function () {
 //		_new = flatten_transformations(path,true)
 
 
+		_ft = paper.freeTransform(image1,
+			{
+				draw: [ 'bbox' ],
+				keepRatio: [ 'axisX', 'axisY', 'bboxCorners'],
+				scale: [ 'axisX', 'axisY', 'bboxCorners'],
+				distance: 1.1,
+				rotate: [ 'axisX', 'axisY', 'bboxSides' ],
+				attrs: { fill: "#fff", stroke: "#333",
 
+				},
+				size: 4
 
-
-        _ft = paper.freeTransform(image1, { draw: [ 'bbox', 'circle' ], keepRatio:  [ 'circle',  'bboxCorners', 'bboxSides'], keepRatio: true }, function(_ft, events) {
+			}, function (_ft, events) {
 
 //			_new = flatten_transformations(path,true)
 
