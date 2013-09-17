@@ -64,7 +64,7 @@ C.Views.Item = Backbone.View.extend({
 	render: function () {
 
 		var _this = this;
-		this._el = paper.image("img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y, 300, 240);
+		this._el = paper.image("img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y, this.model.get("size").x, this.model.get("size").y);
 
 		this._el.hover(function () {
 		},function () {
@@ -86,8 +86,8 @@ C.Views.Item = Backbone.View.extend({
 				size: 4
 
 			}, function (ft, events) {
-				var _path = 'M 0 0 l 200 0 l 0 200  l -200 0  z';
-
+				var _path = 'M 100 200 l 100 0 l 0 200  l -100 0  z';
+//
 				_this._el.attr({"clip-path": _path});
 
 

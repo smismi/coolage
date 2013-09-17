@@ -84,7 +84,7 @@ body {
     list-style-position:  inside;
     background: -webkit-linear-gradient(top, #fff, #f1f1f1);
     border-bottom: 1px solid #e7e9ec;
-    height: 50px;
+    height: 100px;
     padding: 12px;
     overflow: hidden;
 }
