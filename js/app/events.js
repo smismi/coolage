@@ -1,16 +1,17 @@
-var W = {
-	Models: {},
-	Views: {},
-	Events: {},
-	Collections: {},
-	Utils: {}
+var C = {
+    Models: {},
+    Views: {},
+    Events: {},
+    Collections: {},
+    Utils: {}
 }
 
-W.EventsLocals = _.extend({
-	// locals
+
+C.EventsItem = _.extend({
+    // locals
+    CHANGE:     "change",
+    SELECT:     "select",
+	TOFRONT:     "tofront",
+    LAYERSORT:  "layersort"
 }, Backbone.Events);
 
-
-W.EventsDays = _.extend({
-
-}, Backbone.Events);

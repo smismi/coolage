@@ -1,45 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-        <meta charset="utf-8">
-        <title>query._</title>
+    <meta charset="utf-8"/>
+    <title>query._</title>
+    <script src="/js/jquery.2.0.js"></script>
+    <script src="/js/underscore.js"></script>
+    <script src="/js/backbone.js"></script>
+    <script src="/js/raphael.js"></script>
+    <script src="/js/raphael.free_transform.js"></script>
+    <script src="/js/jquery.sortable.js"></script>
+    <script src="/js/dropzone.js"></script>
 
-    <script src="js/jquery.2.0.js"></script>
 
-    <script src="js/underscore.js"></script>
+    <script src="/js/app/events.js"></script>
+    <script src="/js/app/utils.js"></script>
+    <script src="/js/app/models.js"></script>
+    <script src="/js/app/views.js"></script>
+    <script src="/js/app/collection.js"></script>
+    <script src="/js/app/app.js"></script>
 
-    <script src="js/backbone.js"></script>
 
-    <script src="js/raphael.js"></script>
-    <script src="js/raphael.free_transform.js"></script>
+    <link rel="stylesheet" href="css/reset.css" type="text/css"/>
+    <link rel="stylesheet" href="css/default.css" type="text/css"/>
+    <link rel="stylesheet" href="css/dropzone.css" type="text/css"/>
 
-    <script src="js/app/events.js"></script>
-    <script src="js/app/models.js"></script>
-    <script src="js/app/views.js"></script>
-    <script src="js/app/collection.js"></script>
-    <script src="js/app/app.js"></script>
-
-    <script src="js/app/utils.js"></script>
-
-    <link rel="stylesheet" href="css/style.css" type="text/css">
 
 </head>
-<body>   
-
- 
-<div style="width:1000px; margin: 0 auto"> 
-    <h1>COOLAGE</h1>
+<body>
 
 
+<div id="main">
 
-    <aside>
-        aside
+    <div id="toolbar">toolbar</div>
+    <div id="menu">menu</div>
+    <aside id="layers_list">
+
+        <ol id="layers"/>
+
     </aside>
-    <figure id="cnvs">
+    <div id="editor">
+        <figure id="cnvs"/>
+    </div>
 
-    </figure>
+</div>
 
-    <img src="img/PkGAW_n7TTA.jpg" id="photo" alt=""/>
+
+<script id="template_layer" type="text/template">
+    <%= order %>
+    <%= selected %>
+    <%= src %>
+    <%= flattenObject() %>
+
+
+
+    <i class="delete">X</i>
+</script>
+
 
 </body>
 </html>

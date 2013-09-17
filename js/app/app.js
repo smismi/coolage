@@ -1,104 +1,63 @@
 $(document).ready(function () {
 
-	var c = document.getElementById("cnvs");
-	var paper = Raphael(c, 1000, 1000);
-	var image, image1, path;
 
-	Raphael(function () {
+    new C.Views.Paper({collection: items});
 
-		img = document.getElementById("photo");
-		img.style.display = "none";
-
-		image = paper.image(img.src, 140, 140, 320, 240).hover(function () {
-			console.log("ON 1");
-		}, function () {
-				console.log("OFF 1");
-			})
-		;
-		image1 = paper.image(img.src, 0, 0, 320, 240).attr({
-			transform: "s1-1",
-			opacity: .5
-		}).hover(function () {
-				console.log("ON 2");
-			}, function () {
-				console.log("OFF 2");
-			});
-
-		path = paper.path('M 250 250 l 0 -50 l -50 0 l 0 -50 l -50 0 l 0 50 l -50 0 l 0 50 z');
-//		image1.attr({"clip-path": 'M 250 250 l 0 -50 l -50 0 l 0 -50 l -50 0 l 0 50 l -50 0 l 0 50 z'});
-		image1.attr({"clip-rect": '12 21 150 150'});
-
-		path.attr({fill: "url('img/PkGAW_n7TTA.jpg')"});
-
-		// Add freeTransform
-		var ft = paper.freeTransform(image1);
-
-		// Hide freeTransform handles
-		ft.hideHandles();
-
-		// Show hidden freeTransform handles
-		ft.showHandles();
-
-		// Apply transformations programmatically
-		ft.attrs.rotate = 45;
-
-		ft.apply();
-
-		// Remove freeTransform completely
-		ft.unplug();
-
-		// Add freeTransform with options and callback
-		ft = paper.freeTransform(image1, { keepRatio: true }, function(ft, events) {
-			console.log(ft.attrs);
-		});
-
-		// Change options on the fly
-		ft.setOpts({ keepRatio: false });
-
-		// Add freeTransform
-		var ft = paper.freeTransform(path);
-
-		// Hide freeTransform handles
-		ft.hideHandles();
-
-		// Show hidden freeTransform handles
-		ft.showHandles();
-
-		// Apply transformations programmatically
-		ft.attrs.rotate = 45;
-
-		ft.apply();
-
-		// Remove freeTransform completely
-		ft.unplug();
-
-		// Add freeTransform with options and callback
-		ft = paper.freeTransform(path, { keepRatio: true }, function(ft, events) {
-//			console.log(ft.attrs);
-			console.log(ft.subject.attrs.path.toLocaleString());
-		});
-
-		// Change options on the fly
-		ft.setOpts({ keepRatio: false });
+    new C.Views.Layers({collection: items});
 
 
-
-		var anim = Raphael.animation({transform: "r30,500,500s0.5,1r45"}, 1000, "linear").repeat(1);
-		image.animate(anim);
-
-
-	});
-
-
-
-////
-//	timerId = setTimeout(function(){
-
-//		var anim = Raphael.animation({transform: "r90,100,500s0.9,1r45"}, 42000, "linear").repeat(1);
-//			image1.animate(anim);
-//	}, 1900)
-////
-
+//
+//
+//	var c = document.getElementById("cnvs");
+//	var paper = Raphael(c, 1000, 1000);
+//	var image, image1, path;
+////    var _path = 'M 0 0 l 200 0 l 0 100  l -100 0  z';
+//	var _path = 'M 169.57460021972656 15.106499671936035 C 1449.57460021972656 15.106499671936035 282.8146057128906 57.446502685546875 282.8146057128906 57.446502685546875 C 282.8146057128906 57.446502685546875 234.4145965576172 186.89649963378906 234.4145965576172 186.89649963378906 C 234.4145965576172 186.89649963378906 177.79458618164062 165.72650146484375 177.79458618164062 165.72650146484375 C 177.79458618164062 165.72650146484375 169.57460021972656 15.106499671936035 169.57460021972656 15.106499671936035 Z';
+//	Raphael(function () {
+//
+//		img = document.getElementById("photo");
+//		img.style.display = "none";
+//
+//
+//		image1 = paper.image(img.src, 0, 0, 300, 240).hover(function () {
+//			console.log("ON 2");
+//		}, function () {
+//			console.log("OFF 2");
+//		});
+//
+////		path = paper.path(_path);
+//
+////		_new = flatten_transformations(path,true)
+//
+//
+//		_ft = paper.freeTransform(image1,
+//			{
+//				draw: [ 'bbox' ],
+//				keepRatio: [ 'axisX', 'axisY', 'bboxCorners'],
+//				scale: [ 'axisX', 'axisY', 'bboxCorners'],
+//				distance: 1.1,
+//				rotate: [ 'axisX', 'axisY', 'bboxSides' ],
+//				attrs: { fill: "#fff", stroke: "#333",
+//
+//				},
+//				size: 4
+//
+//			}, function (_ft, events) {
+//
+////			_new = flatten_transformations(path,true)
+//
+//				image1.attr({"clip-path": _path});
+//
+//
+//			});
+//
+//
+//
+//
+//	});
+//
+//
 
 
 });
+

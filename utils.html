@@ -1,0 +1,346 @@
+<!doctype html>
+<html>
+<head>
+    <script src="js/jquery.2.0.js"></script>
+    <script src="js/raphael_mod2.js"></script>
+    <script>
+        (function ($) {
+            $.fn.disableSelection = function () {
+                return this.attr('unselectable', 'on').css('user-select', 'none').on('selectstart', false);
+            };
+        })(jQuery);
+
+        jQuery.fn.hold = function (timeout, f) {
+            if (timeout && typeof timeout == 'function') {
+                f = timeout;
+                timeout = 30;
+            }
+            if (f && typeof f == 'function') {
+                var timer = 0;
+                var fireStep = 0;
+                return this.each(function () {
+                    jQuery(this).mousedown(function () {
+                        fireStep = 1, ctr = 0, t = this;
+                        timer = setInterval(function () {
+                            ctr++;
+                            f.call(t, ctr);
+                            fireStep = 2;
+                        }, timeout);
+                    });
+                    clearMousehold = function () {
+                        clearInterval(timer);
+                        if (fireStep == 1) f.call(this, 1);
+                        fireStep = 0;
+                    };
+                    jQuery(this).mouseout(clearMousehold);
+                    jQuery(this).mouseup(clearMousehold);
+                })
+            }
+        }
+
+    </script>
+    <!-- Don't use Raphael's path2curve() before it is fixed. Javascript window has a fixed version of Raphael 2.1.0! -->
+    <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>-->
+</head>
+<body>
+<div><b>Flatten transformations</b>
+    This script converts path coordinates to SVG root element's coordinate space, so that all transformations (in g
+    elements) that are between path and root are applied
+</div>
+<table>
+    <tr>
+        <td style="min-width:200px">
+            <div id="raphael"></div>
+        </td>
+        <td>
+            <b>Transform:</b>
+            <input type="radio" name="target" checked value="myPath">myPath&nbsp;
+            <input type="radio" name="target" value="g1">g1&nbsp;
+            <input type="radio" name="target" value="g2">g2&nbsp;
+
+            <br>
+
+            <div id="scph_minus" class="button">Scale h -</div>
+            <div id="scph_plus" class="button">Scale h +</div>
+            <div id="scpv_minus" class="button">Scale v -</div>
+            <div id="scpv_plus" class="button">Scale v +</div>
+            <br>
+
+            <div id="trph_minus" class="button">Translate h -</div>
+            <div id="trph_plus" class="button">Translate h +</div>
+            <div id="trpv_minus" class="button">Translate v -</div>
+            <div id="trpv_plus" class="button">Translate v +</div>
+            <br>
+
+            <div id="rop_minus" class="button">Rotate -</div>
+            <div id="rop_plus" class="button">Rotate +</div>
+            <br>
+
+            <div id="rem_myPath" class="button">Remove transformation of myPath</div>
+            <br>
+
+            <div id="rem_g1" class="button">Remove transformation of g1</div>
+            <br>
+
+            <div id="rem_g2" class="button">Remove transformation of g2</div>
+            <br>
+
+            <div id="chpa" class="button">Change path data (d)</div>
+            <br>
+
+            <div id="flatten" class="button">FLATTEN TRANSFORMATIONS</div>
+        </td>
+    </tr>
+</table>
+<b>SVG source:</b> <!--<div id="updatesvg" class="button">Update SVG above</div>-->
+
+<textarea id="coords0" style="border:1px solid green;width:100%;height:350px"></textarea>
+
+<b>Path coordinates:</b><br>
+
+<div id="coords1" style="border:1px solid blue;"></div>
+<b>Path coordinates relative to SVG root element:</b><br>
+
+<div id="coords2" style="border:1px solid red;"></div>
+
+<script>
+window.onload = function () {
+
+    $("#scph_minus").hold(function () {
+        transform_elem($("#myPath"), "scaleh", -0.09);
+    }).disableSelection();
+    $("#scph_plus").hold(function () {
+        transform_elem($("#myPath"), "scaleh", 0.09);
+    }).disableSelection();
+
+    $("#scpv_minus").hold(function () {
+        transform_elem($("#myPath"), "scalev", -0.09);
+    }).disableSelection();
+    $("#scpv_plus").hold(function () {
+        transform_elem($("#myPath"), "scalev", 0.09);
+    }).disableSelection();
+
+    $("#trph_minus").hold(function () {
+        transform_elem($("#myPath"), "translateh", -2);
+    }).disableSelection();
+    $("#trph_plus").hold(function () {
+        transform_elem($("#myPath"), "translateh", 2);
+    }).disableSelection();
+
+    $("#trpv_minus").hold(function () {
+        transform_elem($("#myPath"), "translatev", -2);
+    }).disableSelection();
+    $("#trpv_plus").hold(function () {
+        transform_elem($("#myPath"), "translatev", 2);
+    }).disableSelection();
+
+    $("#rop_minus").hold(function () {
+        transform_elem($("#myPath"), "rotate", -2);
+    }).disableSelection();
+    $("#rop_plus").hold(function () {
+        transform_elem($("#myPath"), "rotate", 2);
+    }).disableSelection();
+
+    $("#rem_myPath").click(function () {
+        remove_transformation_of_element($("#myPath"));
+    }).disableSelection();
+    $("#rem_g1").click(function () {
+        remove_transformation_of_element($("#g1"));
+    }).disableSelection();
+    $("#rem_g2").click(function () {
+        remove_transformation_of_element($("#g2"));
+    }).disableSelection();
+
+    $("#chpa").click(function () {
+        change_path();
+    }).disableSelection();
+
+    $("#flatten").click(create_flatten_path).disableSelection();
+
+
+    var paper = Raphael("raphael", "100%", "300");
+    paper.canvas.id = "svg";
+    $("#svg").css("position", "static");
+
+    var myPath_str = "M10 10 " + "L100 10 " + "C160 10 160 100 100 100 " + "L 100 100 " + "L10 100 Z";
+
+    var myPath_str2 = "M 30.00 30.00 " + "Q 101.5 139.7 71.50 145.0 " + "A 73.62 135.3 77.22 0 1 129.2 93.75 " + "A 50.32 54.52 350.8 1 0 104.4 123.4 " + "Q 32.06 34.53 155.4 14.56 " + "M 148.7 129.4 " + "S 131.1 19.93 94.34 44.10";
+
+    var which_path_in_use = "myPath_str";
+    var myPath = paper.path(myPath_str);
+    myPath.node.id = "myPath";
+    $("#myPath").attr({
+        fill: "none",
+        stroke: "white",
+        "stroke-width": 3
+    });
+
+    var g1 = document.createElementNS('http://www.w3.org/2000/svg', "g");
+    g1.setAttribute("id", "g1");
+    document.getElementById('svg').appendChild(g1);
+    g1.appendChild($("#myPath")[0]);
+    $("#g1").attr("transform", "rotate(4) translate(-20,20) scale(1.5,0.8)");
+
+    var g2 = document.createElementNS('http://www.w3.org/2000/svg', "g");
+    g2.setAttribute("id", "g2");
+    document.getElementById('svg').appendChild(g2);
+    g2.appendChild(g1);
+    $("#g2").attr("transform", "rotate(8) translate(-20,-40) scale(1.3,1.0)");
+
+    // Apply some transformations to path
+    $("#myPath").attr("transform", "scale(0.52,0.5)  translate(200,30) rotate(50)");
+
+    create_flatten_path();
+
+    function transform_elem(el, func, amount) {
+        var target = $("input[name='target']:checked").val();
+        var el = $("#" + target);
+
+        if (el && el.attr("transform")) var str = el.attr("transform").toLowerCase();
+        if (!str) str = "scale(1,1) translate(0,0) rotate(0)";
+        if (!el) return;
+
+        //var cur_scale = 3;
+        //var str = "scale(0.52, 0.7) translate(200,30) rotate(50)";
+        var sc = /scale\(\s*([^\s*,)]+)[ ,]+([^\s*,)]+)/.exec(str);
+        var cur = [];
+        cur[0] = sc && sc[1] ? parseFloat(sc[1]) : 1;
+        cur[1] = sc && sc[2] ? parseFloat(sc[2]) : 1;
+
+        var tr = /translate\(\s*([^\s*,)]+)[ ,]+([^\s*,)]+)/.exec(str);
+        cur[2] = tr && tr[1] ? parseFloat(tr[1]) : 0;
+        cur[3] = tr && tr[2] ? parseFloat(tr[2]) : 0;
+
+        var ro = /rotate\(\s*([^)]+)\)/.exec(str);
+        var roi = ro && ro[1] ? ro[1].split(/[, ]+/) : null;
+        //console.log(ro[1]);
+        cur[4] = roi && roi[0] ? parseFloat(roi[0]) : 0;
+        cur[5] = roi && roi[1] ? parseFloat(roi[1]) : 0;
+        cur[6] = roi && roi[2] ? parseFloat(roi[2]) : 0;
+
+        //console.log(cur);
+        if (func == "scaleh") cur[0] += amount;
+        else if (func == "scalev") cur[0] += amount;
+        else if (func == "translateh") cur[2] += amount;
+        else if (func == "translatev") cur[3] += amount;
+        else if (func == "rotate") cur[4] += amount;
+
+        var order = [];
+        order[0] = str.indexOf("scale");
+        order[1] = str.indexOf("translate");
+        order[2] = str.indexOf("rotate");
+        //console.log(order);
+        str = str.replace(/[^scaletranslaterotate ]/g, "");
+        if (order[0] == -1) str = "scale " + str;
+        if (order[1] == -1) str += " translate";
+        if (order[2] == -1) str += " rotate";
+
+        str = str.replace("scale", "scale(" + cur[0] + "," + cur[1] + ")");
+        str = str.replace("translate", "translate(" + cur[2] + "," + cur[3] + ")");
+        str = str.replace("rotate", "rotate(" + cur[4] + "," + cur[5] + "," + cur[6] + ")");
+
+        el.attr("transform", str);
+        update_SVG_source();
+    }
+
+    function update_SVG_source() {
+        var text = $("#raphael").html();
+        text = text.replace(/>/g, ">\n");
+        text = text.replace(/,(?!=\s)/g, ", ");
+        text = text.replace(/  /g, " ");
+        $("#coords0").text(text);
+    }
+
+    function remove_transformation_of_element(el) {
+        el.attr("transform", "");
+        update_SVG_source();
+    }
+
+    function change_path() {
+        if (which_path_in_use == "myPath_str2") {
+            $("#myPath").attr("d", myPath_str);
+            which_path_in_use = "myPath_str";
+        }
+        else {
+            $("#myPath").attr("d", myPath_str2);
+            which_path_in_use = "myPath_str2";
+        }
+        //create_flatten_path();
+        update_SVG_source();
+    }
+
+    function create_flatten_path() {
+        // Normalize transformations
+        var myPath_normalized_str = flatten_transformations(myPath, true);
+
+        // Create normalized path
+        $("#myPath_normalized").remove();
+        var myPath_normalized = paper.path(myPath_normalized_str);
+        myPath_normalized.node.id = "myPath_normalized";
+        $("#myPath_normalized").attr({
+            fill: "none",
+            stroke: "red",
+            "stroke-width": 3,
+            "stroke-opacity": 0.5
+        });
+
+        update_SVG_source();
+
+    }
+
+    function flatten_transformations(raphael_path_elem, normalize_path) {
+
+        var arr, pathDOM = raphael_path_elem.node,
+                d = pathDOM.getAttribute("d").trim();
+
+        if (!normalize_path) // Set to false to prevent possible re-normalization.
+            arr = Raphael.parsePathString(d);
+        else arr = Raphael.path2curve(d); // mahvstcsqz -> MC
+        if (d.charAt(d.length - 1).toUpperCase() == "Z" && arr[arr.length - 1][0].toUpperCase() != "Z") arr.push(["Z"]); // To fix missing Z
+        var svgDOM = pathDOM.ownerSVGElement;
+
+        // Get the matrix that converts path coordinates to SVGroot coordinate space
+        var matrix = pathDOM.getTransformToElement(svgDOM);
+
+        // The following code expects normalized path data, but tries to
+        // handle also partially normalized data
+        var i, j, pt, letter, x, y, point, newcoords = [],
+                seg_length;
+        for (i = 0; i < arr.length; i++) {
+            letter = arr[i][0].toUpperCase();
+            x = 0, y = 0;
+            newcoords[i] = [];
+            newcoords[i][0] = arr[i][0];
+            if (letter != "Z" && letter != "A") {
+                seg_length = arr[i].length;
+                if (letter != "H" && letter != "V") {
+                    for (j = 1; j < arr[i].length; j = j + 2) {
+                        x = arr[i][j];
+                        y = arr[i][j + 1];
+                        pt = svgDOM.createSVGPoint();
+                        pt.x = x;
+                        pt.y = y;
+                        point = pt.matrixTransform(matrix);
+                        newcoords[i][j] = point.x;
+                        newcoords[i][j + 1] = point.y;
+                    }
+                }
+                else if (letter == "H") {
+                    x = arr[i][seg_length - 1];
+                    newcoords[i][1] = x;
+                }
+                else if (letter == "V") {
+                    y = arr[i][seg_length - 1];
+                    newcoords[i][1] = y;
+                }
+            }
+        }
+        newcoords = newcoords.join(" ");
+        return newcoords;
+    } // function flatten_transformations
+
+} // window.onload = function
+</script>
+</body>
+</html>
+
