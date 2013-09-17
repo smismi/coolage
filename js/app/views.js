@@ -86,8 +86,8 @@ C.Views.Item = Backbone.View.extend({
 				size: 4
 
 			}, function (ft, events) {
-				var _path = 'M 100 200 l 100 0 l 0 200  l -100 0  z';
-//
+				var _path = "M 100 100 L 300 300 L 405 332 L 10 400 Z";
+//                            []
 				_this._el.attr({"clip-path": _path});
 
 
@@ -108,7 +108,7 @@ C.Views.Item = Backbone.View.extend({
 
 						break;
 					case "drag":
-//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 //						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
 
 						break;
