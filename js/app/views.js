@@ -60,6 +60,7 @@ C.Views.Item = Backbone.View.extend({
 
 
 
+
 	},
 	render: function () {
 
@@ -71,7 +72,12 @@ C.Views.Item = Backbone.View.extend({
 		}).click(function () {
 			C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
 
-		});
+		}).dblclick(function () {
+
+				new C.Views.ItemCrop({model: _this.model});
+
+
+			});
 
 		this.item = paper.freeTransform(this._el,
 			{
@@ -86,10 +92,9 @@ C.Views.Item = Backbone.View.extend({
 				size: 4
 
 			}, function (ft, events) {
-				var _path = "M 100 100 L 300 300 L 405 332 L 10 400 Z";
-//                            []
-				_this._el.attr({"clip-path": _path});
+				var _path = "M  100  100  L 5 210 L  446 309 L 10  400 Z";
 
+				_this._el.attr({"clip-path": _path});
 
 				switch (events[0]) {
 					case "init":
@@ -140,11 +145,9 @@ C.Views.Item = Backbone.View.extend({
 	setSelect: function (modelCid, state) {
 		if (modelCid === this.model.cid) {
 			this.model.set("selected", true);
-			console.log("cllick");
+
 			this.item.showHandles();
 		} else {
-			console.log("cllick");
-
 
 			this.item.hideHandles();
 			this.model.set("selected", false);
@@ -160,6 +163,155 @@ C.Views.Item = Backbone.View.extend({
 		}
 
 
+	}
+});
+C.Views.ItemCrop = Backbone.View.extend({
+	el: "#cropalka",
+
+	initialize: function () {
+		this.render();
+//
+//		C.EventsItem.off(C.EventsItem.CHANGE, this.updateAttrs, this);
+//		C.EventsItem.on(C.EventsItem.CHANGE, this.updateAttrs, this);
+	console.log("CROP")
+
+	},
+	render: function () {
+
+		var _this = this;
+		this.$el.show();
+		var _img = new Image();
+			_img.src = "/img/" + this.model.get("src");
+
+		var _imgD = {};
+
+		_img.onload = function() {
+
+			_imgD.width = this.width;
+			_imgD.height = this.height;
+
+
+			_this.$el.css({"width": _imgD.width, "height": _imgD.height, "margin-left": -_imgD.width/2, "margin-top": -_imgD.height/2});
+
+
+			var r = Raphael("cropalka", _imgD.width, _imgD.height),
+				discattr = {fill: "#fff", stroke: "none"};
+			r.rect(0, 0, _imgD.width, _imgD.height, 10).attr({stroke: "#666"});
+			r.image("/img/" + _this.model.get("src"), 0, 0, _imgD.width, _imgD.height);
+				_erect = r.rect(0, 0, 100, 122).attr({stroke: "#666"});
+
+
+
+
+
+
+			function recalc () {
+
+			var _z = Raphael.pathBBox(curve.attr('path'));
+			_erect.attr({x:_z.x,y: _z.y, width:_z.width, height:_z.height});
+			console.log(" верх-лево: " +_z.x + ", " + _z.y + " ширина высота: " + _z.width + ", " + _z.height + " коорд центра: " + (_z.x - _z.x2)  + ", " + (_z.y - _z.y2) );
+
+			}
+
+
+
+		function _curve(x, y,
+						x1, y1,
+						x2, y2,
+						x3, y3,
+
+						color) {
+			var path = [
+				["M", x, y],
+				["L", x1, y1],
+				["L", x2, y2],
+				["L", x3, y3],
+				["Z"]
+			];
+			curve = r.path(path).attr({stroke: color || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"});
+			var controls = r.set(
+					r.circle(x, y, 5).attr(discattr),
+					r.circle(x1, y1, 5).attr(discattr),
+					r.circle(x2, y2, 5).attr(discattr),
+					r.circle(x3, y3, 5).attr(discattr)
+				)
+				;
+			controls[0].update = function (x, y) {
+				var X = this.attr("cx") + x,
+					Y = this.attr("cy") + y;
+				this.attr({cx: X, cy: Y});
+
+//                    console.log(X, Y);
+				path[0][1] = X;
+				path[0][2] = Y;
+
+				curve.attr({path: path});
+				recalc();
+
+//					controls[2].update(x, y);
+			};
+			controls[1].update = function (x, y) {
+				var X = this.attr("cx") + x,
+					Y = this.attr("cy") + y;
+				this.attr({cx: X, cy: Y});
+				path[1][1] = X;
+				path[1][2] = Y;
+				curve.attr({path: path});
+
+
+				recalc();
+			};
+			controls[2].update = function (x, y) {
+				var X = this.attr("cx") + x,
+					Y = this.attr("cy") + y;
+				this.attr({cx: X, cy: Y});
+				path[2][1] = X;
+				path[2][2] = Y;
+				curve.attr({path: path});
+				recalc();
+
+			};
+			controls[3].update = function (x, y) {
+				var X = this.attr("cx") + x,
+					Y = this.attr("cy") + y;
+				this.attr({cx: X, cy: Y});
+				path[3][1] = X;
+				path[3][2] = Y;
+				curve.attr({path: path});
+				recalc();
+
+			};
+			controls.drag(move, up);
+		}
+
+		function move(dx, dy) {
+			this.update(dx - (this.dx || 0), dy - (this.dy || 0));
+			this.dx = dx;
+			this.dy = dy;
+		}
+
+		function up() {
+			this.dx = this.dy = 0;
+		}
+
+		_curve(
+			100, 100,
+			300, 300,
+			100, 300,
+			10, 400,
+
+
+			"hsb(0, .75, .75)");
+
+		}
+
+//		var _erect = r.rect(0, 0, 100, 122).attr({stroke: "#666"});
+//		r.text(310, 20, "Drag the points to change the curves").attr({fill: "#fff", "font-size": 16});
+
+
+
+
+		return this;
 	}
 });
 

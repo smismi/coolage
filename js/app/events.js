@@ -11,7 +11,7 @@ C.EventsItem = _.extend({
     // locals
     CHANGE:     "change",
     SELECT:     "select",
-	TOFRONT:     "tofront",
+	TOFRONT:    "tofront",
     LAYERSORT:  "layersort"
 }, Backbone.Events);
 
