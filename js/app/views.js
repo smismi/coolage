@@ -185,6 +185,9 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 		var _imgD = {};
 
+		var points = [];
+
+
 		_img.onload = function() {
 
 			_imgD.width = this.width;
@@ -194,94 +197,135 @@ C.Views.ItemCrop = Backbone.View.extend({
 			_this.$el.css({"width": _imgD.width, "height": _imgD.height, "margin-left": -_imgD.width/2, "margin-top": -_imgD.height/2});
 
 
-			var r = Raphael("cropalka", _imgD.width, _imgD.height),
+			r = Raphael("cropalka", _imgD.width, _imgD.height),
 				discattr = {fill: "#fff", stroke: "none"};
-			r.rect(0, 0, _imgD.width, _imgD.height, 10).attr({stroke: "#666"});
-			r.image("/img/" + _this.model.get("src"), 0, 0, _imgD.width, _imgD.height);
-				_erect = r.rect(0, 0, 100, 122).attr({stroke: "#666"});
+			r.rect(0, 0, _imgD.width, _imgD.height, 10)
+				.attr({stroke: "#666"});
+
+			r.image("/img/" + _this.model.get("src"), 0, 0, _imgD.width, _imgD.height)
+				.click(function (event) {
+
+
+ 						points.push([event.layerX, event.layerY]);
+
+					console.log("click");
+
+
+					redrawPoints();
+
+				})
+				.mousedown(function (event) {
+						console.log("down")
+
+
+				})
+				.mouseup(function (event) {
+					console.log("up")
+
+				});
 
 
 
 
 
 
-			function recalc () {
 
-			var _z = Raphael.pathBBox(curve.attr('path'));
-			_erect.attr({x:_z.x,y: _z.y, width:_z.width, height:_z.height});
-			console.log(" верх-лево: " +_z.x + ", " + _z.y + " ширина высота: " + _z.width + ", " + _z.height + " коорд центра: " + (_z.x - _z.x2)  + ", " + (_z.y - _z.y2) );
 
+
+
+
+
+
+
+
+
+		}
+
+
+		function redrawPoints(){
+			console.log(points);
+
+			_curve(points, "hsb(0, .75, .75)");
+
+
+		}
+
+
+
+		function _curve(points, color) {
+
+
+
+
+			var _points = $.map( points, function(n){
+				return n;
+			});
+
+			console.log(points);
+
+			var path = []
+			var controls = r.set();
+
+//
+//			for (i = 0; i < controls.length; i++) {
+//				if (controls[i]) {
+//					delete controls[i--];
+//					controls.length--;
+//				}
+//			}
+			points.forEach(function(point, index){
+
+				var nodeType = "L";
+				if (index === 0) nodeType = "M"
+
+				path.push([nodeType, point[0], point[1]])
+				if (index === points.length-1) {
+
+					path.push(["Z"]);
+//					return;
+
+				};
+
+
+				controls.push(
+
+					r.circle(point[0], point[1], 5).attr(discattr)
+
+				);
+
+
+				controls[index].update = function (x, y) {
+					var X = this.attr("cx") + x,
+						Y = this.attr("cy") + y;
+					this.attr({cx: X, cy: Y});
+
+					path[index][1] = X;
+					path[index][2] = Y;
+
+					curve.attr({path: path});
+
+				};
+
+
+
+
+			})
+
+			console.log(controls.length);
+			if (typeof curve === "undefined") {
+				curve = r.path(path).attr({stroke: color || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"});
+			} else {
+				curve.attr("path", path);
 			}
 
 
 
-		function _curve(x, y,
-						x1, y1,
-						x2, y2,
-						x3, y3,
-
-						color) {
-			var path = [
-				["M", x, y],
-				["L", x1, y1],
-				["L", x2, y2],
-				["L", x3, y3],
-				["Z"]
-			];
-			curve = r.path(path).attr({stroke: color || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"});
-			var controls = r.set(
-					r.circle(x, y, 5).attr(discattr),
-					r.circle(x1, y1, 5).attr(discattr),
-					r.circle(x2, y2, 5).attr(discattr),
-					r.circle(x3, y3, 5).attr(discattr)
-				)
-				;
-			controls[0].update = function (x, y) {
-				var X = this.attr("cx") + x,
-					Y = this.attr("cy") + y;
-				this.attr({cx: X, cy: Y});
-
-//                    console.log(X, Y);
-				path[0][1] = X;
-				path[0][2] = Y;
-
-				curve.attr({path: path});
-				recalc();
-
-//					controls[2].update(x, y);
-			};
-			controls[1].update = function (x, y) {
-				var X = this.attr("cx") + x,
-					Y = this.attr("cy") + y;
-				this.attr({cx: X, cy: Y});
-				path[1][1] = X;
-				path[1][2] = Y;
-				curve.attr({path: path});
-
-
-				recalc();
-			};
-			controls[2].update = function (x, y) {
-				var X = this.attr("cx") + x,
-					Y = this.attr("cy") + y;
-				this.attr({cx: X, cy: Y});
-				path[2][1] = X;
-				path[2][2] = Y;
-				curve.attr({path: path});
-				recalc();
-
-			};
-			controls[3].update = function (x, y) {
-				var X = this.attr("cx") + x,
-					Y = this.attr("cy") + y;
-				this.attr({cx: X, cy: Y});
-				path[3][1] = X;
-				path[3][2] = Y;
-				curve.attr({path: path});
-				recalc();
-
-			};
 			controls.drag(move, up);
+
+
+
+
+
 		}
 
 		function move(dx, dy) {
@@ -294,25 +338,9 @@ C.Views.ItemCrop = Backbone.View.extend({
 			this.dx = this.dy = 0;
 		}
 
-		_curve(
-			100, 100,
-			300, 300,
-			100, 300,
-			10, 400,
-
-
-			"hsb(0, .75, .75)");
-
-		}
-
-//		var _erect = r.rect(0, 0, 100, 122).attr({stroke: "#666"});
-//		r.text(310, 20, "Drag the points to change the curves").attr({fill: "#fff", "font-size": 16});
-
-
-
-
 		return this;
 	}
+
 });
 
 C.Views.Layers = Backbone.View.extend({
