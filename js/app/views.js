@@ -58,7 +58,7 @@ C.Views.Item = Backbone.View.extend({
 		C.EventsItem.off(C.EventsItem.TOFRONT, this.toFront, this);
 		C.EventsItem.on(C.EventsItem.TOFRONT, this.toFront, this);
 
-
+		this.model.on('change', this.updatePath, this)
 
 
 	},
@@ -74,10 +74,10 @@ C.Views.Item = Backbone.View.extend({
 
 		}).dblclick(function () {
 
-				new C.Views.ItemCrop({model: _this.model});
+			new C.Views.ItemCrop({model: _this.model});
 
 
-			});
+		});
 
 		this.item = paper.freeTransform(this._el,
 			{
@@ -92,9 +92,10 @@ C.Views.Item = Backbone.View.extend({
 				size: 4
 
 			}, function (ft, events) {
-				var _path = "M  100  100  L 5 210 L  446 309 L 10  400 Z";
 
-				_this._el.attr({"clip-path": _path});
+				var _path = _this.model.get("path");
+
+				if (_path !== null) _this._el.attr({"clip-path": _path});
 
 				switch (events[0]) {
 					case "init":
@@ -140,7 +141,13 @@ C.Views.Item = Backbone.View.extend({
 	},
 	updateAttrs: function (model, attrs) {
 
+
+		this.item.apply();
 		model.set("xyz", attrs);
+	},
+	updatePath: function (model, attrs) {
+
+		console.log(this.model.get("path"));
 	},
 	setSelect: function (modelCid, state) {
 		if (modelCid === this.model.cid) {
@@ -349,7 +356,24 @@ C.Views.ItemCrop = Backbone.View.extend({
 		"click .save" : "throwTo"
 	},
 	throwTo : function() {
-		alert(1)
+
+
+		var _path = $.map( path, function(n){
+			return n;
+		}).join(" ");
+
+
+		this.model.set("path", _path);
+
+		this.close();
+
+
+
+	},
+	close: function(){
+
+		this.$el.html("").hide();
+
 	}
 
 });

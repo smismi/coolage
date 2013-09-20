@@ -38,6 +38,7 @@ var items = new C.Collections.Items([
                 "y":100},
             "ratio":1
         },
+		path: null,
         order: 0
     }
 	,
@@ -71,7 +72,7 @@ var items = new C.Collections.Items([
 			"ratio": 1
 		},
 		order: 1,
-		path: 'M 0 0 l 200 0 l 0 100  l -100 0  z'
+		path: 'M 0 0,  l 200 0, l 0 100,  l -100 0,  z'
 	}
 //	,
 //    {

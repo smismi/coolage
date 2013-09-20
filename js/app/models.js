@@ -6,6 +6,7 @@ C.Models.Item = Backbone.Model.extend({
         "src" : null,
         "selected": false,
         "xyz" : {},
+		"path": null,
 		"flattenObject": function() {
 			return JSON.stringify(this.xyz)
 		}
