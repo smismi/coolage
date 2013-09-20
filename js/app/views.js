@@ -177,7 +177,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 	},
 	render: function () {
-
+	   	var blockd = false;
 		var _this = this;
 		this.$el.show();
 		var _img = new Image();
@@ -185,7 +185,10 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 		var _imgD = {};
 
-		var points = [];
+		points = [];
+		var __points = [];
+
+
 
 
 		_img.onload = function() {
@@ -202,16 +205,19 @@ C.Views.ItemCrop = Backbone.View.extend({
 			r.rect(0, 0, _imgD.width, _imgD.height, 10)
 				.attr({stroke: "#666"});
 
+			path = [];
+			controls = [];
 			r.image("/img/" + _this.model.get("src"), 0, 0, _imgD.width, _imgD.height)
 				.click(function (event) {
 
+				if(blockd) return;
 
- 						points.push([event.layerX, event.layerY]);
-
+//						points.push([event.layerX, event.layerY]);
+					    _curve([event.layerX, event.layerY]);
 					console.log("click");
 
 
-					redrawPoints();
+//					redrawPoints();
 
 				})
 				.mousedown(function (event) {
@@ -224,109 +230,108 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 				});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		}
 
+		var i = 0;
 
-		function redrawPoints(){
-			console.log(points);
-
-			_curve(points, "hsb(0, .75, .75)");
-
-
-		}
+		function _curve(__points) {
 
 
 
-		function _curve(points, color) {
+//			points.push(__points);
 
 
+			i++;
+//			console.log(__points);
+			var nodeType = "L";
 
-
-			var _points = $.map( points, function(n){
-				return n;
-			});
-
-			console.log(points);
-
-			var path = []
-			var controls = r.set();
-
-//
-//			for (i = 0; i < controls.length; i++) {
-//				if (controls[i]) {
-//					delete controls[i--];
-//					controls.length--;
-//				}
-//			}
-			points.forEach(function(point, index){
-
-				var nodeType = "L";
-				if (index === 0) nodeType = "M"
-
-				path.push([nodeType, point[0], point[1]])
-				if (index === points.length-1) {
-
-					path.push(["Z"]);
-//					return;
-
-				};
-
-
-				controls.push(
-
-					r.circle(point[0], point[1], 5).attr(discattr)
-
-				);
-
-
-				controls[index].update = function (x, y) {
-					var X = this.attr("cx") + x,
-						Y = this.attr("cy") + y;
-					this.attr({cx: X, cy: Y});
-
-					path[index][1] = X;
-					path[index][2] = Y;
-
-					curve.attr({path: path});
-
-				};
-
-
-
-
-			})
-
-			console.log(controls.length);
 			if (typeof curve === "undefined") {
-				curve = r.path(path).attr({stroke: color || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"});
-			} else {
-				curve.attr("path", path);
+				nodeType = "M";
+
+				path.push([nodeType, __points[0], __points[1]])
+
+				curve = r.path(path).attr({stroke: "hsb(0, .75, .75)" || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"}).click(function(e){debugger;});
+
+
+			}  else {
+
+				path.push([nodeType, __points[0], __points[1]])
+
+				curve.attr({path: path});
+
 			}
 
 
-
-			controls.drag(move, up);
-
+			controls[i] = createControls(__points[0], __points[1], i);
 
 
 
 
 		}
+
+
+		function createControls (x, y, i) {
+
+
+			var _control = r.circle(x, y, 5).attr(discattr);
+
+			if(i === 1) {
+
+				_control.click (function() {
+					if(blockd) return;
+
+					path.push(["Z"]);
+
+					curve.attr({path: path});
+
+					blockd = true;
+					return;
+
+				})
+
+			}
+
+
+			_control.update = function (x, y) {
+				var X = this.attr("cx") + x,
+					Y = this.attr("cy") + y;
+				this.attr({cx: X, cy: Y});
+
+				path[i - 1][1] = X;
+				path[i - 1][2] = Y;
+
+				curve.attr({path: path});
+
+
+
+			};
+
+			_control.drag(move, up);
+			_control.dblclick (function() {
+
+
+
+				_control.remove();
+				controlDelete(i);
+
+			});
+
+
+
+
+			return _control;
+		}
+
+		function controlDelete(i) {
+
+ 			path.remove(i - 1);
+
+			if(i === 1) {
+				path[0][0] = "M";
+			}
+			curve.attr({path: path});
+
+ 		}
 
 		function move(dx, dy) {
 			this.update(dx - (this.dx || 0), dy - (this.dy || 0));
@@ -339,6 +344,12 @@ C.Views.ItemCrop = Backbone.View.extend({
 		}
 
 		return this;
+	},
+	events: {
+		"click .save" : "throwTo"
+	},
+	throwTo : function() {
+		alert(1)
 	}
 
 });
@@ -467,3 +478,10 @@ C.Views.Layer = Backbone.View.extend({
 	}
 
 });
+
+
+Array.prototype.remove = function(from, to) {
+	var rest = this.slice((to || from) + 1 || this.length);
+	this.length = from < 0 ? this.length + from : from;
+	return this.push.apply(this, rest);
+};
