@@ -58,7 +58,10 @@ C.Views.Item = Backbone.View.extend({
 		C.EventsItem.off(C.EventsItem.TOFRONT, this.toFront, this);
 		C.EventsItem.on(C.EventsItem.TOFRONT, this.toFront, this);
 
-		this.model.on('change', this.updatePath, this)
+//
+		C.EventsItem.off(C.EventsItem.CHANGE, this.updatePath, this);
+		C.EventsItem.on(C.EventsItem.CHANGE, this.updatePath, this);
+//
 
 
 	},
@@ -74,28 +77,48 @@ C.Views.Item = Backbone.View.extend({
 
 		}).dblclick(function () {
 
-			new C.Views.ItemCrop({model: _this.model});
+//			new C.Views.ItemCrop({model: _this.model});
 
 
 		});
 
-		this.item = paper.freeTransform(this._el,
+		var st = paper.set();
+
+		st.push(this._el);
+
+
+//		var _path = this.model.get("path");
+
+//
+		var _path = this.model.get("path");
+
+
+//		this.path.transform("t100,100r45t-100,0");
+//
+//
+//		st.push(this.path);
+
+//		this._el.attr({"clip-rect": "20 20 300 100"})
+
+
+
+		if (_path !== null) this._el.attr({"clip-path": _path});
+
+
+
+		this.item = paper.freeTransform(st,
 			{
 				draw: [ 'bbox' ],
 				keepRatio: [ 'axisX', 'axisY', 'bboxCorners'],
 				scale: [ 'axisX', 'axisY', 'bboxCorners'],
 				distance: 1.1,
 				rotate: [ 'axisX', 'axisY', 'bboxSides' ],
-				attrs: { fill: "#fff", stroke: "#333",
+				attrs: { fill: "#fff", stroke: "#333"
 
 				},
 				size: 4
 
 			}, function (ft, events) {
-
-				var _path = _this.model.get("path");
-
-				if (_path !== null) _this._el.attr({"clip-path": _path});
 
 				switch (events[0]) {
 					case "init":
@@ -120,7 +143,7 @@ C.Views.Item = Backbone.View.extend({
 						break;
 					default :
 
-//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
 				}
 
@@ -141,14 +164,26 @@ C.Views.Item = Backbone.View.extend({
 	},
 	updateAttrs: function (model, attrs) {
 
-
-		this.item.apply();
-		model.set("xyz", attrs);
+//		model.set("xyz", attrs);
 	},
 	updatePath: function (model, attrs) {
 
-		console.log(this.model.get("path"));
+		var _xyz = model.get("xyz", attrs);
+		var _xyz = this._el.clip.attributes[1].value;
+
+
+
+
+//		_new = flatten_transformations(this.path,true)
+		this._el.clip.childNodes[0].setAttribute("transform", "matrix(" + this._el.matrix.a + "," + this._el.matrix.b + "," + this._el.matrix.c + "," + this._el.matrix.d + "," + this._el.matrix.e + "," + this._el.matrix.f + ")");
+
+//		this._el.attr({"clip-path": null})
+//		console.log(_new);
+		console.log(_xyz);
+
+
 	},
+
 	setSelect: function (modelCid, state) {
 		if (modelCid === this.model.cid) {
 			this.model.set("selected", true);
