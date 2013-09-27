@@ -108,18 +108,27 @@ body {
 
 
 
-#cropalka {
+/*#cropalka {*/
+    /*display: none;*/
+    /*position: fixed;*/
+    /*top: 50%;*/
+    /*left: 50%;*/
+    /*background: #fe9345;*/
+
+/*}*/
+
+/*#container {*/
+    /*position: relative;*/
+/*}*/
+/*#container img{*/
+    /*border: 12px solid red;*/
+/*}*/
+
+#wdqwdqwd {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     background: #fe9345;
 
-}
-
-#container {
-    position: relative;
-}
-#container img{
-    border: 12px solid red;
 }

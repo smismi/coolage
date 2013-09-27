@@ -48,8 +48,8 @@ C.Views.Item = Backbone.View.extend({
 	initialize: function () {
 		this.render();
 
-		C.EventsItem.off(C.EventsItem.CHANGE, this.updateAttrs, this);
-		C.EventsItem.on(C.EventsItem.CHANGE, this.updateAttrs, this);
+//		C.EventsItem.off(C.EventsItem.CHANGE, this.updateAttrs, this);
+//		C.EventsItem.on(C.EventsItem.CHANGE, this.updateAttrs, this);
 
 		C.EventsItem.off(C.EventsItem.SELECT, this.setSelect, this);
 		C.EventsItem.on(C.EventsItem.SELECT, this.setSelect, this);
@@ -58,10 +58,10 @@ C.Views.Item = Backbone.View.extend({
 		C.EventsItem.off(C.EventsItem.TOFRONT, this.toFront, this);
 		C.EventsItem.on(C.EventsItem.TOFRONT, this.toFront, this);
 
-//
-		C.EventsItem.off(C.EventsItem.CHANGE, this.updatePath, this);
-		C.EventsItem.on(C.EventsItem.CHANGE, this.updatePath, this);
-//
+////
+//		C.EventsItem.off(C.EventsItem.SETMASK, this.updatePath, this);
+//		C.EventsItem.on(C.EventsItem.SETMASK, this.updatePath, this);
+////
 
 
 	},
@@ -82,16 +82,12 @@ C.Views.Item = Backbone.View.extend({
 
 		});
 
-		var st = paper.set();
-
-		st.push(this._el);
 
 
 //		var _path = this.model.get("path");
 
 //
-		var _path = this.model.get("path");
-
+		this._path = this.model.get("path");
 
 //		this.path.transform("t100,100r45t-100,0");
 //
@@ -102,11 +98,10 @@ C.Views.Item = Backbone.View.extend({
 
 
 
-		if (_path !== null) this._el.attr({"clip-path": _path});
 
 
 
-		this.item = paper.freeTransform(st,
+		this.item = paper.freeTransform(this._el,
 			{
 				draw: [ 'bbox' ],
 				keepRatio: [ 'axisX', 'axisY', 'bboxCorners'],
@@ -125,6 +120,7 @@ C.Views.Item = Backbone.View.extend({
 
 						break;
 					case "apply":
+						_this.updateAttrs();
 
 						break;
 					case "drag start":
@@ -137,13 +133,13 @@ C.Views.Item = Backbone.View.extend({
 
 						break;
 					case "drag":
-						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 //						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
-
+						 _this.updateAttrs();
 						break;
 					default :
 
-						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
 				}
 
@@ -154,33 +150,30 @@ C.Views.Item = Backbone.View.extend({
 		);
 
 		this.item.hideHandles();
+
 		var xyz = this.model.get("xyz");
 
 		this.item.attrs = xyz;
 
+		this._el.attr({"clip-path": this._path})
+
 		this.item.apply();
+
 
 		return this;
 	},
 	updateAttrs: function (model, attrs) {
+		this.updatePath()
+
 
 //		model.set("xyz", attrs);
 	},
 	updatePath: function (model, attrs) {
 
-		var _xyz = model.get("xyz", attrs);
-		var _xyz = this._el.clip.attributes[1].value;
-
-
-
-
+		 console.log(this.model.get("src"));
 //		_new = flatten_transformations(this.path,true)
+//		this._el.clip.setAttribute("transform", "matrix(1,0,0,1,0,0)");
 		this._el.clip.childNodes[0].setAttribute("transform", "matrix(" + this._el.matrix.a + "," + this._el.matrix.b + "," + this._el.matrix.c + "," + this._el.matrix.d + "," + this._el.matrix.e + "," + this._el.matrix.f + ")");
-
-//		this._el.attr({"clip-path": null})
-//		console.log(_new);
-		console.log(_xyz);
-
 
 	},
 
@@ -208,7 +201,8 @@ C.Views.Item = Backbone.View.extend({
 	}
 });
 C.Views.ItemCrop = Backbone.View.extend({
-	el: "#cropalka",
+	el: "#wdqwdqwd",
+	template: "#image_crop",
 
 	initialize: function () {
 		this.render();
@@ -216,12 +210,26 @@ C.Views.ItemCrop = Backbone.View.extend({
 //		C.EventsItem.off(C.EventsItem.CHANGE, this.updateAttrs, this);
 //		C.EventsItem.on(C.EventsItem.CHANGE, this.updateAttrs, this);
 	console.log("CROP")
-
+	this.$el.show();
+	},
+	events: {
+//		"click .delete": "delete"
 	},
 	render: function () {
-	   	var blockd = false;
+
+//		vars
+		var template = _.template($(this.template).html());
+
+		this.$el.html(template(this.model.toJSON()));
+
 		var _this = this;
-		this.$el.show();
+
+//		var imageSvg = $("")
+	   	var blockd = false;
+
+
+
+
 		var _img = new Image();
 			_img.src = "/img/" + this.model.get("src");
 
@@ -237,7 +245,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 			_imgD.width = this.width;
 			_imgD.height = this.height;
-
+			debugger;
 
 			_this.$el.css({"width": _imgD.width, "height": _imgD.height, "margin-left": -_imgD.width/2, "margin-top": -_imgD.height/2});
 

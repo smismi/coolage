@@ -11,31 +11,32 @@ C.Collections.Items = Backbone.Collection.extend({
 
 var items = new C.Collections.Items([
     {
-        src: "test.jpg",
+        src: "PkGAW_n7TTA.jpg",
         selected: true,
 		"size": {
-			"x":1014,
-			"y":900
+			"x":612,
+			"y":612
 		},
         xyz: {
             "x": 0,
             "y":0,
             "size": {
-                "x":200,
-                "y":100
+                "x":612,
+                "y":612
             },
             "center":{
-                "x":100,
-                "y":50
+                "x":306,
+                "y":306
             },
-            "rotate":350,
+            "rotate":0,
             "scale":{
-                "x":3,
-                "y":2
+                "x":1,
+                "y":1
             },
             "translate":{
                 "x":0,
-                "y":0},
+                "y":0
+			},
             "ratio":1
         },
 		path: 'M 0 0,  l 200 0, l 0 100,  l -100 0,  z',
@@ -53,21 +54,21 @@ var items = new C.Collections.Items([
 			"x": 0,
 			"y": 0,
 			"size": {
-				"x": 200,
-				"y": 100
+				"x": 500,
+				"y": 380
 			},
 			"center": {
-				"x": 100,
-				"y": 50
+				"x": 250,
+				"y": 190
 			},
-			"rotate": 12,
+			"rotate": 0,
 			"scale": {
 				"x": 1,
 				"y": 1
 			},
 			"translate": {
-				"x": 500,
-				"y": 400
+				"x": 000,
+				"y": 200
 			},
 			"ratio": 1
 		},
