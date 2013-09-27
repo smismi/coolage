@@ -82,22 +82,7 @@ C.Views.Item = Backbone.View.extend({
 
 		});
 
-
-
-//		var _path = this.model.get("path");
-
-//
 		this._path = this.model.get("path");
-
-//		this.path.transform("t100,100r45t-100,0");
-//
-//
-//		st.push(this.path);
-
-//		this._el.attr({"clip-rect": "20 20 300 100"})
-
-
-
 
 
 
@@ -155,24 +140,22 @@ C.Views.Item = Backbone.View.extend({
 
 		this.item.attrs = xyz;
 
-		this._el.attr({"clip-path": this._path})
+		if (this._path !== null) this._el.attr({"clip-path": this._path})
 
 		this.item.apply();
 
 
 		return this;
 	},
-	updateAttrs: function (model, attrs) {
+	updateAttrs: function () {
 		this.updatePath()
 
 
 //		model.set("xyz", attrs);
 	},
-	updatePath: function (model, attrs) {
+	updatePath: function () {
 
-		 console.log(this.model.get("src"));
-//		_new = flatten_transformations(this.path,true)
-//		this._el.clip.setAttribute("transform", "matrix(1,0,0,1,0,0)");
+		if (this._path === null) return
 		this._el.clip.childNodes[0].setAttribute("transform", "matrix(" + this._el.matrix.a + "," + this._el.matrix.b + "," + this._el.matrix.c + "," + this._el.matrix.d + "," + this._el.matrix.e + "," + this._el.matrix.f + ")");
 
 	},

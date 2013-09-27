@@ -21,17 +21,17 @@ var items = new C.Collections.Items([
             "x": 0,
             "y":0,
             "size": {
-                "x":612,
-                "y":612
+                "x":100,
+                "y":100
             },
             "center":{
-                "x":306,
-                "y":306
+                "x":50,
+                "y":50
             },
-            "rotate":0,
+            "rotate":20,
             "scale":{
-                "x":1,
-                "y":1
+                "x":.5,
+                "y":0.5
             },
             "translate":{
                 "x":0,
@@ -39,42 +39,43 @@ var items = new C.Collections.Items([
 			},
             "ratio":1
         },
-		path: 'M 0 0,  l 200 0, l 0 100,  l -100 0,  z',
+		path: null,
+//		path: 'M 0 0,  l 200 0, l 0 300,  l -100 0,  z',
         order: 0
     }
-	,
-	{
-		src: "1dZEEv1T.jpg",
-		selected: false,
-		"size": {
-			"x": 500,
-			"y": 380
-		},
-		xyz: {
-			"x": 0,
-			"y": 0,
-			"size": {
-				"x": 500,
-				"y": 380
-			},
-			"center": {
-				"x": 250,
-				"y": 190
-			},
-			"rotate": 0,
-			"scale": {
-				"x": 1,
-				"y": 1
-			},
-			"translate": {
-				"x": 000,
-				"y": 200
-			},
-			"ratio": 1
-		},
-		order: 1,
-		path: 'M 0 0,  l 200 0, l 0 100,  l -100 0,  z'
-	},
+//	,
+//	{
+//		src: "1dZEEv1T.jpg",
+//		selected: false,
+//		"size": {
+//			"x": 500,
+//			"y": 380
+//		},
+//		xyz: {
+//			"x": 0,
+//			"y": 0,
+//			"size": {
+//				"x": 500,
+//				"y": 380
+//			},
+//			"center": {
+//				"x": 250,
+//				"y": 190
+//			},
+//			"rotate": 0,
+//			"scale": {
+//				"x": 1,
+//				"y": 1
+//			},
+//			"translate": {
+//				"x": 000,
+//				"y": 200
+//			},
+//			"ratio": 1
+//		},
+//		order: 1,
+//		path: 'M 0 0,  l 200 0, l 0 100,  l -100 0,  z'
+//	},
 //	{
 //		src: "animal-planet-142-20.jpg",
 //		selected: false,
