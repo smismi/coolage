@@ -74,8 +74,20 @@ var items = new C.Collections.Items([
 			"ratio": 1
 		},
 		order: 1,
-		path: 'M 0 0,  l 200 0, l 0 100,   z'
+//		path: [
+//			["M", 100, 100],
+//			["L", 200, 0],
+//			["L", 0, 200],
+//			["Z"]
+//		],
+		path: [["M",267,90],["L",349,168],["L",420,80],["L",291,55],["Z"]]
 	},
+
+
+
+
+
+
 //	{
 //		src: "animal-planet-142-20.jpg",
 //		selected: false,
