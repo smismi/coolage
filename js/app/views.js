@@ -206,6 +206,7 @@ C.Views.Item = Backbone.View.extend({
 	},
 
 	updatePath: function () {
+        console.log(234235);
 		this._path = this.model.get("path");
 
 		var _path = $.map( this._path, function(n){
@@ -377,6 +378,10 @@ C.Views.ItemCrop = Backbone.View.extend({
 			this.update(dx - (this.dx || 0), dy - (this.dy || 0));
 			this.dx = dx;
 			this.dy = dy;
+
+
+
+
 		}
 
 		function up() {
@@ -451,8 +456,11 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
  		this.model.set("path", this._path);
-		C.EventsItem.trigger(C.EventsItem.SETMASK, this.model, this.attrs);
+ 		this.model.trigger('change:path');
 
+
+//		C.EventsItem.trigger(C.EventsItem.SETMASK, this.model, this.attrs);
+		debugger;
 		this.close();
 
 
@@ -597,3 +605,27 @@ Array.prototype.remove = function(from, to) {
 	this.length = from < 0 ? this.length + from : from;
 	return this.push.apply(this, rest);
 };
+
+Array.prototype.compare = function (array) {
+	// if the other array is a falsy value, return
+	if (!array)
+		return false;
+
+	// compare lengths - can save a lot of time
+	if (this.length != array.length)
+		return false;
+
+	for (var i = 0; i < this.length; i++) {
+		// Check if we have nested arrays
+		if (this[i] instanceof Array && array[i] instanceof Array) {
+			// recurse into the nested arrays
+			if (!this[i].compare(array[i]))
+				return false;
+		}
+		else if (this[i] != array[i]) {
+			// Warning - two different object instances will never be equal: {x:20} != {x:20}
+			return false;
+		}
+	}
+	return true;
+}
