@@ -280,18 +280,6 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 		}
 
-		function controlDelete(i) {
-
- 			path.remove(i - 1);
-
-			if(i === 1) {
-				path[0][0] = "M";
-			}
-			curve.attr({path: path});
-
- 		}
-
-
 
 		return this;
 	},
@@ -330,7 +318,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 	createControls : function (x, y, i) {
 
 		var _this = this;
-		console.log(i);
+
 		var _control = r.circle(x, y, 5).attr(discattr);
 
 		if(i === 1) {
@@ -365,12 +353,10 @@ C.Views.ItemCrop = Backbone.View.extend({
 		};
 
 		_control.drag(move, up);
+
 		_control.dblclick (function() {
-
-
-
 			_control.remove();
-			controlDelete(i);
+			_this.controlDelete(i);
 
 		});
 
@@ -387,7 +373,17 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 		return _control;
 	},
-	controlDelete : function () {
+	controlDelete : function (i) {
+
+			this._path.remove(i - 1);
+
+			if(i === 1) {
+				this._path[0][0] = "M";
+			}
+			this.curve.attr({path: this._path});
+
+
+
 
 	},
 	doCurve: function (__points) {
