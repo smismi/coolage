@@ -273,7 +273,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 		this.curve = null;
-		this._path = this.model.get("path") || [];
+		this._path = this.model.get("path");
 		this.controls = [];
 
 		this._img.onload = function() {
@@ -406,6 +406,13 @@ C.Views.ItemCrop = Backbone.View.extend({
 	doCurve: function () {
 
 		var _this = this;
+
+		if (this._path === null) {
+
+			this._path = [];
+			return;
+		}
+
 		this.curve = r.path(this._path).attr({stroke: "hsb(0, .75, .75)" || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"}).click(function(e){debugger;});
 
 		$.each(this._path, function( index, value ) {
@@ -422,7 +429,6 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 		var i = this._path.length + 1;
-
 
 
 		var nodeType = "L";
@@ -460,8 +466,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 //		C.EventsItem.trigger(C.EventsItem.SETMASK, this.model, this.attrs);
-		debugger;
-		this.close();
+ 		this.close();
 
 
 
