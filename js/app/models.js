@@ -9,7 +9,9 @@ C.Models.Item = Backbone.Model.extend({
 		"path": null,
 		"flattenObject": function() {
 			return JSON.stringify(this.xyz)
-		}
+		},
+		points: [],
+		controls: []
 	}
 })
 

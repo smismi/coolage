@@ -237,6 +237,8 @@ C.Views.ItemCrop = Backbone.View.extend({
 	template: "#image_crop",
 
 	initialize: function () {
+
+
 		this.render();
 		this.$el.show();
 	},
@@ -254,7 +256,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 		var _this = this;
 
-	   	var blockd = false;
+	   this.blockd = false;
 
 
 
@@ -262,143 +264,20 @@ C.Views.ItemCrop = Backbone.View.extend({
 		this._img = new Image();
 		this._img.src = "/img/" + this.model.get("src");
 
-		var _imgD = {};
 
-		points = [];
-		var __points = [];
-
-
-		$(this._img).on('load', this.imgOnLoad);
-
+		this.points = this.model.get("points");
+		this.controls = this.model.get("controls");
+		this.curve = null;
+		this._path = [];
 
 
 		this._img.onload = function() {
 
-			_imgD.width = this.width;
-			_imgD.height = this.height;
-
-			_this.$el.css({"width": _imgD.width, "height": _imgD.height, "margin-left": -_imgD.width/2, "margin-top": -_imgD.height/2});
-
-
-			r = Raphael("cropalka", _imgD.width, _imgD.height),
-				discattr = {fill: "#fff", stroke: "none"};
-			r.rect(0, 0, _imgD.width, _imgD.height, 10)
-				.attr({stroke: "#666"});
-
-			path = [];
-			controls = [];
-			r.image("/img/" + _this.model.get("src"), 0, 0, _imgD.width, _imgD.height)
-				.click(function (event) {
-
-				if(blockd) return;
-
-//						points.push([event.layerX, event.layerY]);
-					    _curve([event.layerX, event.layerY]);
-					console.log("click");
-
-
-//					redrawPoints();
-
-				})
-				.mousedown(function (event) {
-						console.log("down")
-
-
-				})
-				.mouseup(function (event) {
-					console.log("up")
-
-				});
-
-		}
-
-		var i = 0;
-
-		function _curve(__points) {
-
-
-
-//			points.push(__points);
-
-
-			i++;
-//			console.log(__points);
-			var nodeType = "L";
-
-			if (typeof curve === "undefined") {
-				nodeType = "M";
-
-				path.push([nodeType, __points[0], __points[1]])
-
-				curve = r.path(path).attr({stroke: "hsb(0, .75, .75)" || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"}).click(function(e){debugger;});
-
-
-			}  else {
-
-				path.push([nodeType, __points[0], __points[1]])
-
-				curve.attr({path: path});
-
-			}
-
-
-			controls[i] = createControls(__points[0], __points[1], i);
-
-
-
-		}
-
-
-		function createControls (x, y, i) {
-
-
-			var _control = r.circle(x, y, 5).attr(discattr);
-
-			if(i === 1) {
-
-				_control.click (function() {
-					if(blockd) return;
-
-					path.push(["Z"]);
-
-					curve.attr({path: path});
-
-					blockd = true;
-					return;
-
-				})
-
-			}
-
-
-			_control.update = function (x, y) {
-				var X = this.attr("cx") + x,
-					Y = this.attr("cy") + y;
-				this.attr({cx: X, cy: Y});
-
-				path[i - 1][1] = X;
-				path[i - 1][2] = Y;
-
-				curve.attr({path: path});
-
-
-
-			};
-
-			_control.drag(move, up);
-			_control.dblclick (function() {
-
-
-
-				_control.remove();
-				controlDelete(i);
-
-			});
+			_this.imgOnLoad(this.width, this.width)
 
 
 
 
-			return _control;
 		}
 
 		function controlDelete(i) {
@@ -412,6 +291,90 @@ C.Views.ItemCrop = Backbone.View.extend({
 
  		}
 
+
+
+		return this;
+	},
+	imgOnLoad : function (w, h) {
+
+		var _this = this;
+		this.$el.css({"width": w, "height": h, "margin-left": -w/2, "margin-top": -h/2});
+
+
+		r = Raphael("cropalka", w, h),
+			discattr = {fill: "#fff", stroke: "none"};
+		r.rect(0, 0, w, h, 10)
+			.attr({stroke: "#666"});
+
+		r.image("/img/" + this.model.get("src"), 0, 0, w, h)
+			.click(function (event) {
+
+//				if(_this.blockd) return;
+
+ 				_this.doCurve([event.layerX, event.layerY]);
+
+
+//					redrawPoints();
+
+			})
+			.mousedown(function (event) {
+				console.log("down")
+
+
+			})
+			.mouseup(function (event) {
+				console.log("up")
+
+			});
+	},
+	createControls : function (x, y, i) {
+
+		var _this = this;
+		console.log(i);
+		var _control = r.circle(x, y, 5).attr(discattr);
+
+		if(i === 1) {
+
+			_control.click (function() {
+				if(_this.blockd) return;
+
+				_this._path.push(["Z"]);
+
+				_this.curve.attr({path: _this._path});
+
+				_this.blockd = true;
+				return;
+
+			})
+
+		}
+
+
+		_control.update = function (x, y) {
+			var X = this.attr("cx") + x,
+				Y = this.attr("cy") + y;
+			this.attr({cx: X, cy: Y});
+
+			_this._path[i - 1][1] = X;
+			_this._path[i - 1][2] = Y;
+
+			_this.curve.attr({path: _this._path});
+
+
+
+		};
+
+		_control.drag(move, up);
+		_control.dblclick (function() {
+
+
+
+			_control.remove();
+			controlDelete(i);
+
+		});
+
+
 		function move(dx, dy) {
 			this.update(dx - (this.dx || 0), dy - (this.dy || 0));
 			this.dx = dx;
@@ -422,19 +385,40 @@ C.Views.ItemCrop = Backbone.View.extend({
 			this.dx = this.dy = 0;
 		}
 
-		return this;
-	},
-	imgOnLoad : function () {
-		debugger;
-	 	console.log("imgOnLoad");
-	},
-	createControls : function () {
-
+		return _control;
 	},
 	controlDelete : function () {
 
 	},
-	doCurve: function () {
+	doCurve: function (__points) {
+
+
+		var i = this._path.length + 1;
+
+
+
+		var nodeType = "L";
+
+			if (this.curve === null) {
+				nodeType = "M";
+
+				this._path.push([nodeType, __points[0], __points[1]])
+
+				this.curve = r.path(this._path).attr({stroke: "hsb(0, .75, .75)" || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"}).click(function(e){debugger;});
+
+
+			}  else {
+
+				this._path.push([nodeType, __points[0], __points[1]])
+
+				this.curve.attr({path: this._path});
+
+			}
+
+
+			this.controls[i] = this.createControls(__points[0], __points[1], i);
+
+
 
 	},
 	events: {
@@ -443,7 +427,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 	throwTo : function() {
 
 
-		var _path = $.map( path, function(n){
+		var _path = $.map( this._path, function(n){
 			return n;
 		}).join(" ");
 
