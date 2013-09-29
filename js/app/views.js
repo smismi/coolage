@@ -303,7 +303,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 //				if(_this.blockd) return;
 
- 				_this.doCurve([event.layerX, event.layerY]);
+ 				_this.setPoint([event.layerX, event.layerY]);
 
 
 //					redrawPoints();
@@ -321,6 +321,10 @@ C.Views.ItemCrop = Backbone.View.extend({
 		this.restoreControls();
 	},
 	restoreControls : function () {
+
+		this.doCurve();
+
+
 
 	},
 	createControls : function (x, y, i) {
@@ -394,7 +398,21 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 	},
-	doCurve: function (__points) {
+	doCurve: function () {
+
+		var _this = this;
+		this.curve = r.path(this._path).attr({stroke: "hsb(0, .75, .75)" || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"}).click(function(e){debugger;});
+
+		$.each(this._path, function( index, value ) {
+
+//			debugger;
+			var _i = index + 1;
+			_this.controls[_i] = _this.createControls(value[1], value[2], _i);
+		});
+
+
+	},
+	setPoint: function (__points) {
 
 
 
