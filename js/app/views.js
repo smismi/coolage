@@ -208,9 +208,12 @@ C.Views.Item = Backbone.View.extend({
 		this.item.attrs.size = { x: this._box.width, y: this._box.height }
 		this.item.attrs.center = { x: this._box.cx, y: this._box.cy }
 
-		console.log(this._box)
 
 		this._el.attr({"clip-path": _path})
+
+		console.log(this._path)
+		console.log(_path)
+
 		this.item.apply();
 
 	},
@@ -441,6 +444,8 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 			}  else {
+				debugger;
+				if (this._path[i-2] == "Z") this._path.pop();
 
 				this._path.push([nodeType, __points[0], __points[1]])
 
