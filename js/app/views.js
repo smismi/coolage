@@ -183,19 +183,7 @@ C.Views.Item = Backbone.View.extend({
 		return this;
 	},
 	updateAttrs: function (model, attrs) {
-
-
 		if (this._path !== null) {
-
-			var _path = $.map( this._path, function(n){
-				return n;
-			}).join(" ");
-
-			this._box = Raphael.pathBBox(_path);
-
-
-			this.item.attrs.size = { x: this._box.width, y: this._box.height }
-			this.item.attrs.center = { x: this._box.cx, y: this._box.cy }
 
 
 		} else return;
@@ -206,14 +194,25 @@ C.Views.Item = Backbone.View.extend({
 	},
 
 	updatePath: function () {
-        console.log(234235);
-		this._path = this.model.get("path");
+ 		this._path = this.model.get("path");
+
+
 
 		var _path = $.map( this._path, function(n){
 			return n;
 		}).join(" ");
 
+		this._box = Raphael.pathBBox(_path);
+
+
+		this.item.attrs.size = { x: this._box.width, y: this._box.height }
+		this.item.attrs.center = { x: this._box.cx, y: this._box.cy }
+
+		console.log(this._box)
+
 		this._el.attr({"clip-path": _path})
+		this.item.apply();
+
 	},
 
 	setSelect: function (modelCid, state) {
@@ -566,6 +565,7 @@ C.Views.Reset = Backbone.View.extend({
 });
 C.Views.Layer = Backbone.View.extend({
 	tagName: "li",
+	className: "sort",
 	template: "#template_layer",
 	initialize: function () {
 		this.render();
