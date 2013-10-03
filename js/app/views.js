@@ -14,8 +14,8 @@ C.Views.Paper = Backbone.View.extend({
 	render: function () {
 
 
-//        TODO: вынести во вьюху
 		c = document.getElementById("cnvs");
+
 		paper = Raphael(c, 1000, 1000);
 
 		this.collection.each(function (item) {
@@ -26,12 +26,16 @@ C.Views.Paper = Backbone.View.extend({
 		}, this);
 
 
-		console.log("ITEMS draw")
+		console.log("ITEMS draw");
+
 		return this;
+
 	},
 	renderEach: function (model) {
-		var day = new C.Views.Item({model: model, collection: this.collection});
- 	},
+
+		new C.Views.Item({model: model, collection: this.collection});
+
+	},
 	frontToEach: function () {
 
 		this.collection.each(function (model) {
@@ -48,6 +52,9 @@ C.Views.Item = Backbone.View.extend({
 	initialize: function () {
 		this.render();
 
+
+
+
 		C.EventsItem.off(C.EventsItem.SELECT, this.setSelect, this);
 		C.EventsItem.on(C.EventsItem.SELECT, this.setSelect, this);
 
@@ -55,18 +62,17 @@ C.Views.Item = Backbone.View.extend({
 		C.EventsItem.off(C.EventsItem.TOFRONT, this.toFront, this);
 		C.EventsItem.on(C.EventsItem.TOFRONT, this.toFront, this);
 
-//		C.EventsItem.off(C.EventsItem.SETMASK, this.tewrr, this);
-//		C.EventsItem.on(C.EventsItem.SETMASK, this.tewrr, this);
 
-////
+
 		this.model.off('change:xyz', this.updateAttrs, this);
 		this.model.on('change:xyz', this.updateAttrs, this);
 		this.model.off('change:path', this.updatePath, this);
 		this.model.on('change:path', this.updatePath, this);
 
-////
 
 
+		this.dragged = false;
+		this.timerId;
 	},
 	render: function () {
 
@@ -83,10 +89,17 @@ C.Views.Item = Backbone.View.extend({
 
 		}).dblclick(function () {
 
-			new C.Views.ItemCrop({model: _this.model});
+
+				if (_this.dragged) {
+
+					return;
+
+				}
+
+				new C.Views.ItemCrop({model: _this.model});
 
 
-		});
+			});
 
 
 
@@ -104,35 +117,41 @@ C.Views.Item = Backbone.View.extend({
 				size: 4
 
 			}, function (ft, events) {
-
-				switch (events[0]) {
+ 				switch (events[0]) {
 					case "init":
 
 						break;
 					case "apply":
+
+
 						_this.updateAttrs(_this.model, this.attrs);
-//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
 						break;
 					case "drag start":
-//						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+
+
 
 						break;
 					case "click":
-//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
-//						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+
 
 						break;
 					case "drag":
-//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
-//						C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
-//						_this.updateAttrs(_this.model, this.attrs);
+
+
 						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+
+
+						_this.dragEndHandler();
+
+						break;
+					case "drag end":
+
+
 
 						break;
 					default :
 
-//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
 				}
 
@@ -192,7 +211,23 @@ C.Views.Item = Backbone.View.extend({
 
 
 	},
+	dragEndHandler: function() {
 
+
+		this.dragged = true;
+
+		clearTimeout(this.timerId);
+
+		this.timerId = setTimeout(
+
+			_.bind(function () {
+				this.dragged = false
+			}, this)
+
+			, 750);
+
+
+	},
 	updatePath: function () {
  		this._path = this.model.get("path");
 
@@ -210,6 +245,8 @@ C.Views.Item = Backbone.View.extend({
 
 
 		this._el.attr({"clip-path": _path})
+
+
 
 		console.log(this._path)
 		console.log(_path)
@@ -313,12 +350,17 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 			})
 			.mousedown(function (event) {
-				console.log("down")
+
+
+				//
 
 
 			})
 			.mouseup(function (event) {
-				console.log("up")
+
+
+				//
+
 
 			});
 		this.restoreControls();
@@ -391,17 +433,22 @@ C.Views.ItemCrop = Backbone.View.extend({
 		}
 
 		return _control;
+
+
 	},
 	controlDelete : function (i) {
 
-			this._path.remove(i - 1);
-
-			if(i === 1) {
-				this._path[0][0] = "M";
-			}
-			this.curve.attr({path: this._path});
+		this._path.remove(i - 1);
 
 
+		if (i === 1) {
+
+			this._path[0][0] = "M";
+
+		}
+
+
+		this.curve.attr({path: this._path});
 
 
 	},
@@ -412,16 +459,21 @@ C.Views.ItemCrop = Backbone.View.extend({
 		if (this._path === null) {
 
 			this._path = [];
+
 			return;
+
+
 		}
 
 		this.curve = r.path(this._path).attr({stroke: "hsb(0, .75, .75)" || Raphael.getColor(), "stroke-width": 4, "stroke-linecap": "round"}).click(function(e){debugger;});
 
 		$.each(this._path, function( index, value ) {
 
-//			debugger;
 			var _i = index + 1;
+
 			_this.controls[_i] = _this.createControls(value[1], value[2], _i);
+
+
 		});
 
 
@@ -444,7 +496,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 			}  else {
-				debugger;
+
 				if (this._path[i-2] == "Z") this._path.pop();
 
 				this._path.push([nodeType, __points[0], __points[1]])
@@ -494,9 +546,6 @@ C.Views.Layers = Backbone.View.extend({
 		this.collection.on('sort', this.render, this);
 
 
-//		C.EventsItem.off(C.EventsItem.SELECT, this.slideTo, this);
-//		C.EventsItem.on(C.EventsItem.SELECT, this.slideTo, this);
-
 		C.EventsItem.off(C.EventsItem.LAYERSORT, this.layerSort, this);
 		C.EventsItem.on(C.EventsItem.LAYERSORT, this.layerSort, this);
 
@@ -522,19 +571,15 @@ C.Views.Layers = Backbone.View.extend({
 		this.$el.append(layer.$el);
 
 	},
-	slideTo: function (model) {
-
-	},
 	layerSort: function () {
-		var _collection = [];
-		$("#layers li").each(function (index) {
+
+
+
+ 		$("#layers li").each(function (index) {
 
 			var _id = $(this).data("cid");
 
 			items.get(_id).set("order", index);
-
-//			console.log(_id, index);
-
 
  		})
 
@@ -542,9 +587,9 @@ C.Views.Layers = Backbone.View.extend({
 
 
 
-//		items.reset(_collection);
 	},
 	sortable: function () {
+
 		$("#layers").sortable().unbind('sortupdate').bind('sortupdate', function (e, ui) {
 
 			var current = $("#" + ui.item.context.id)
@@ -561,11 +606,15 @@ C.Views.Layers = Backbone.View.extend({
 C.Views.Reset = Backbone.View.extend({
 	el: "#reset",
 	events: {
+
 		"click .reset" : "reset"
+
 	},
 	reset: function () {
-		console.log("reset");
-	}
+
+
+
+ 	}
 
 });
 C.Views.Layer = Backbone.View.extend({
