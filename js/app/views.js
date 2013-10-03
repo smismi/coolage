@@ -33,7 +33,7 @@ C.Views.Paper = Backbone.View.extend({
 	},
 	renderEach: function (model) {
 
-		new C.Views.Item({model: model, collection: this.collection});
+		 new C.Views.Item({model: model, collection: this.collection});
 
 	},
 	frontToEach: function () {
@@ -66,8 +66,12 @@ C.Views.Item = Backbone.View.extend({
 
 		this.model.off('change:xyz', this.updateAttrs, this);
 		this.model.on('change:xyz', this.updateAttrs, this);
+
+
+
 		this.model.off('change:path', this.updatePath, this);
 		this.model.on('change:path', this.updatePath, this);
+
 
 
 
@@ -79,15 +83,23 @@ C.Views.Item = Backbone.View.extend({
 		var _this = this;
 
 
+			this._el = paper.image("img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y, this.model.get("size").x, this.model.get("size").y);
 
-		this._el = paper.image("img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y, this.model.get("size").x, this.model.get("size").y);
+		this._el
+			.hover(
+				function () {
 
-		this._el.hover(function () {
-		},function () {
-		}).click(function () {
-			C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+				},
+				function () {
 
-		}).dblclick(function () {
+				}
+			)
+			.click (function () {
+
+				C.EventsItem.trigger(C.EventsItem.SELECT, _this.model.cid, true);
+
+			})
+			.dblclick(function () {
 
 
 				if (_this.dragged) {
@@ -100,8 +112,6 @@ C.Views.Item = Backbone.View.extend({
 
 
 			});
-
-
 
 
 		this.item = paper.freeTransform(this._el,
@@ -141,6 +151,7 @@ C.Views.Item = Backbone.View.extend({
 
 						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
+						console.log(_this._path);
 
 						_this.dragEndHandler();
 
@@ -202,10 +213,17 @@ C.Views.Item = Backbone.View.extend({
 		return this;
 	},
 	updateAttrs: function (model, attrs) {
+
+
 		if (this._path !== null) {
 
 
 		} else return;
+
+
+		//uglyhack
+
+
 		this._el.clip.childNodes[0].setAttribute("transform", "matrix(" + this._el.matrix.a + "," + this._el.matrix.b + "," + this._el.matrix.c + "," + this._el.matrix.d + "," + this._el.matrix.e + "," + this._el.matrix.f + ")");
 
 
@@ -229,9 +247,16 @@ C.Views.Item = Backbone.View.extend({
 
 	},
 	updatePath: function () {
+
+
+
  		this._path = this.model.get("path");
 
 
+
+		if (this._path === null) {
+			return
+		}
 
 		var _path = $.map( this._path, function(n){
 			return n;
@@ -248,8 +273,7 @@ C.Views.Item = Backbone.View.extend({
 
 
 
-		console.log(this._path)
-		console.log(_path)
+
 
 		this.item.apply();
 
@@ -278,17 +302,26 @@ C.Views.Item = Backbone.View.extend({
 
 	}
 });
+
+
+
+
 C.Views.ItemCrop = Backbone.View.extend({
 	el: "#wdqwdqwd",
 	template: "#image_crop",
 
 	initialize: function () {
 
-
-		this.render();
+		this.render().bindEvents();
 		this.$el.show();
+
+
+
 	},
-	events: {
+	bindEvents: function ()  {
+
+
+		$(".save", this.$el).on("click", _.bind(this.throwTo, this));
 
 
 
@@ -318,9 +351,6 @@ C.Views.ItemCrop = Backbone.View.extend({
 		this._img.onload = function() {
 
 			_this.imgOnLoad(this.width, this.height)
-
-
-
 
 		}
 
@@ -366,6 +396,8 @@ C.Views.ItemCrop = Backbone.View.extend({
 		this.restoreControls();
 	},
 	restoreControls : function () {
+
+
 
 		this.doCurve();
 
@@ -510,9 +542,6 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 
-	},
-	events: {
-		"click .save" : "throwTo"
 	},
 	throwTo : function() {
 
