@@ -249,7 +249,6 @@ C.Views.Item = Backbone.View.extend({
 	updatePath: function () {
 
 
-
  		this._path = this.model.get("path");
 
 
@@ -546,8 +545,9 @@ C.Views.ItemCrop = Backbone.View.extend({
 	throwTo : function() {
 
 
- 		this.model.set("path", this._path);
- 		this.model.trigger('change:path');
+ 		this.model.set({"path": this._path}, {validate : true});
+		this.model.trigger('change:path');
+
 
 
 //		C.EventsItem.trigger(C.EventsItem.SETMASK, this.model, this.attrs);

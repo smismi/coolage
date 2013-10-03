@@ -11,7 +11,7 @@ C.Collections.Items = Backbone.Collection.extend({
 
 var items = new C.Collections.Items([
     {
-        src: "PkGAW_n7TTA.jpg",
+        src: "500.gif",
         selected: true,
 		"size": {
 			"x":612,
