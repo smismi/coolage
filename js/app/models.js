@@ -25,7 +25,7 @@ C.Models.Item = Backbone.Model.extend({
 			errors.push({name: 'path', message: 'Path too short'});
 
 
-			attrs.path = null;
+			return "error 0"
 
 		}
 	}

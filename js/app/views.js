@@ -33,7 +33,9 @@ C.Views.Paper = Backbone.View.extend({
 	},
 	renderEach: function (model) {
 
-		 new C.Views.Item({model: model, collection: this.collection});
+		 new C.Views.Item({
+
+			 model: model, collection: this.collection});
 
 	},
 	frontToEach: function () {
@@ -72,6 +74,10 @@ C.Views.Item = Backbone.View.extend({
 		this.model.off('change:path', this.updatePath, this);
 		this.model.on('change:path', this.updatePath, this);
 
+		this.model.on("invalid", function(model, error) {
+			alert(model.get("path") + " " + error);
+			model.set("path", null)
+		});
 
 
 
