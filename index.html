@@ -20,10 +20,10 @@
     <script src="/js/app/app.js"></script>
 
 
-    <link rel="stylesheet" href="css/reset.css" type="text/css"/>
-    <link rel="stylesheet" href="css/default.css" type="text/css"/>
-    <link rel="stylesheet" href="css/dropzone.css" type="text/css"/>
-
+    <link href='http://fonts.googleapis.com/css?family=Roboto:100,300,400,700,100italic&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/styles.css" type="text/css"/>
+    <!--<link rel="stylesheet" href="css/default.css" type="text/css"/>-->
+    <!--<link rel="stylesheet" href="css/dropzone.css" type="text/css"/>-->
 
 </head>
 <body>
@@ -31,7 +31,12 @@
 
 <div id="main">
 
-    <div id="toolbar">toolbar</div>
+    <div id="toolbar">
+
+        <div class="login_buttons">
+            <input type="button" value="login" class="button"/>
+        </div>
+    </div>
     <div id="menu">menu</div>
     <aside id="layers_list">
 
@@ -61,12 +66,9 @@
 </script>
 
 <script id="image_crop" type="text/template">
-    <div id="cropalka">
+    <div id="cropalka"></div>
 
-
-    </div>
-
-    <input type="button" class="save" value="save"/>
+    <input type="button" class="button save" value="save"/>
     <i class="delete">X</i>
 </script>
 

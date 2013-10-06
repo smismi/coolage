@@ -89,7 +89,7 @@ C.Views.Item = Backbone.View.extend({
 		var _this = this;
 
 
-			this._el = paper.image("img/" + this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y, this.model.get("size").x, this.model.get("size").y);
+			this._el = paper.image(this.model.get("src"), this.model.get("xyz").x, this.model.get("xyz").y, this.model.get("size").x, this.model.get("size").y);
 
 		this._el
 			.hover(
@@ -155,7 +155,7 @@ C.Views.Item = Backbone.View.extend({
 					case "drag":
 
 
-						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
+//						C.EventsItem.trigger(C.EventsItem.CHANGE, _this.model, this.attrs);
 
 						console.log(_this._path);
 
@@ -228,7 +228,6 @@ C.Views.Item = Backbone.View.extend({
 
 
 		//uglyhack
-
 
 		this._el.clip.childNodes[0].setAttribute("transform", "matrix(" + this._el.matrix.a + "," + this._el.matrix.b + "," + this._el.matrix.c + "," + this._el.matrix.d + "," + this._el.matrix.e + "," + this._el.matrix.f + ")");
 
@@ -346,7 +345,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 		this._img = new Image();
-		this._img.src = "/img/" + this.model.get("src");
+		this._img.src = this.model.get("src");
 
 
 		this.curve = null;
@@ -373,7 +372,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 		r.rect(0, 0, w, h, 10)
 			.attr({stroke: "#666"});
 
-		r.image("/img/" + this.model.get("src"), 0, 0, w, h)
+		r.image(this.model.get("src"), 0, 0, w, h)
 			.click(function (event) {
 
 //				if(_this.blockd) return;
@@ -659,10 +658,6 @@ C.Views.Layer = Backbone.View.extend({
 	initialize: function () {
 		this.render();
 		C.EventsItem.off(C.EventsItem.SELECT, this.selectMe, this);
-		C.EventsItem.on(C.EventsItem.SELECT, this.selectMe, this);
-
-		C.EventsItem.off(C.EventsItem.CHANGE, this.colorMe, this);
-		C.EventsItem.on(C.EventsItem.CHANGE, this.colorMe, this);
 
 	},
 	events: {
