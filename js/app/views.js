@@ -70,14 +70,14 @@ C.Views.Item = Backbone.View.extend({
 		this.model.on('change:xyz', this.updateAttrs, this);
 
 
+		this.model.on("invalid", function(model, error) {
+			alert("слишком мало точек для замкнутого контура - попробуйте еще");
+			model.set("path", null)
+		});
+
 
 		this.model.off('change:path', this.updatePath, this);
 		this.model.on('change:path', this.updatePath, this);
-
-		this.model.on("invalid", function(model, error) {
-			alert(model.get("path") + " " + error);
-			model.set("path", null)
-		});
 
 
 

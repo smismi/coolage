@@ -19,13 +19,15 @@ C.Models.Item = Backbone.Model.extend({
 
  			errors.push({name: 'path', message: 'Path is null'});
 
+			return null
+
+
 		}  else if (attrs.path.length < 3) {
 
 
 			errors.push({name: 'path', message: 'Path too short'});
 
-
-			return "error 0"
+			return true
 
 		}
 	}
