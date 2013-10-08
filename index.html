@@ -12,6 +12,12 @@
     <script src="/js/dropzone.js"></script>
 
 
+    <script src="/dist_2/js/bootstrap.min.js"></script>
+
+
+
+
+
     <script src="/js/app/events.js"></script>
     <script src="/js/app/utils.js"></script>
     <script src="/js/app/models.js"></script>
@@ -21,7 +27,8 @@
 
 
     <link href='http://fonts.googleapis.com/css?family=Roboto:100,300,400,700,100italic&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="css/styles.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/styles.css" type="text/css"/>
+    <link rel="stylesheet" href="/dist_2/css/bootstrap.css" type="text/css"/>
     <!--<link rel="stylesheet" href="css/default.css" type="text/css"/>-->
     <!--<link rel="stylesheet" href="css/dropzone.css" type="text/css"/>-->
 
@@ -46,10 +53,6 @@
     <div id="editor">
         <figure id="cnvs"/>
     </div>
-
-</div>
-<div id="wdqwdqwd">
-           wfqwfqwfq
 
 </div>
 <div id="popup" class="popup">
@@ -88,13 +91,47 @@
 </script>
 
 <script id="image_crop" type="text/template">
-    <div id="cropalka"></div>
+
 
     <input type="button" class="button save" value="save"/>
     <i class="delete">X</i>
 </script>
 
-<div id="fullscreen_overlay" class="overlay"></div>
+
+<!-- Button trigger modal -->
+<a data-toggle="modal" href="#myModal" class="btn btn-primary btn-lg">Launch demo modal</a>
+
+
+
+
+
+<script id="modal_window" type="text/template">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="cropalka">
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</script>
+
+<div id="wfwfw">
+
+</div>
 </body>
 </html>
 

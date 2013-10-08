@@ -311,13 +311,16 @@ C.Views.Item = Backbone.View.extend({
 
 
 C.Views.ItemCrop = Backbone.View.extend({
-	el: "#wdqwdqwd",
-	template: "#image_crop",
+	el: "#wfwfw",
+	template: "#modal_window",
 
 	initialize: function () {
 
+
+
+
 		this.render().bindEvents();
-		this.$el.show();
+//		this.$el.show();
 
 
 
@@ -325,7 +328,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 	bindEvents: function ()  {
 
 
-		$(".save", this.$el).on("click", _.bind(this.throwTo, this));
+		$(".btn-primary", this.$el).on("click", _.bind(this.throwTo, this));
 
 
 
@@ -364,8 +367,8 @@ C.Views.ItemCrop = Backbone.View.extend({
 	imgOnLoad : function (w, h) {
 
  		var _this = this;
-		this.$el.css({"width": w, "height": h, "margin-left": -w/2, "margin-top": -h/2});
 
+		$('#myModal').find('.modal-dialog').css({"width": w + 60, "height": h + 40})
 
 		r = Raphael("cropalka", w, h),
 			discattr = {fill: "#fff", stroke: "none"};
@@ -398,6 +401,11 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 			});
 		this.restoreControls();
+
+
+
+		$('#myModal').modal("show");
+
 	},
 	restoreControls : function () {
 
@@ -556,7 +564,8 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 //		C.EventsItem.trigger(C.EventsItem.SETMASK, this.model, this.attrs);
- 		this.close();
+// 		this.close();
+		$('#myModal').modal("hide");
 
 
 
