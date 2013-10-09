@@ -310,9 +310,69 @@ C.Views.Item = Backbone.View.extend({
 
 
 
+C.Views.Login = Backbone.View.extend({
+    el: "#modal_window_l",
+    template: "#login_window",
+    initialize: function () {
+
+
+        this.render().bindEvents();
+
+
+    },
+    bindEvents: function ()  {
+
+        $(".btn-primary", this.$el).on("click", _.bind(this.tryToLogin, this));
+
+
+    },
+    render: function () {
+
+//		vars
+        var template = _.template($(this.template).html());
+
+        this.$el.html(template);
+
+        $('#login_window_body').modal("show");
+
+
+        return this;
+    },
+    tryToLogin: function (obj) {
+
+        console.log("try to login ajax");
+
+
+
+
+
+//        this.onSuccess();
+        this.onFail();
+
+    },
+    onSuccess: function (obj) {
+
+        $('#login_window_body').modal("hide");
+
+
+    },
+    onFail: function (obj) {
+
+        if($.fn.shake instanceof Function) {
+
+            $("#login_window_body").shake(2,7,300);
+
+        }
+
+    }
+
+});
+
+
+
 C.Views.ItemCrop = Backbone.View.extend({
-	el: "#wfwfw",
-	template: "#modal_window",
+    el: "#modal_window_l",
+ 	template: "#crop_window",
 
 	initialize: function () {
 
@@ -368,7 +428,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
  		var _this = this;
 
-		$('#myModal').find('.modal-dialog').css({"width": w + 60, "height": h + 40})
+		$('#crop_window_body').find('.modal-dialog').css({"width": w + 60, "height": h + 40})
 
 		r = Raphael("cropalka", w, h),
 			discattr = {fill: "#fff", stroke: "none"};
@@ -404,7 +464,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 
 
-		$('#myModal').modal("show");
+		$('#crop_window_body').modal("show");
 
 	},
 	restoreControls : function () {

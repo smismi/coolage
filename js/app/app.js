@@ -8,8 +8,8 @@ $(document).ready(function () {
 
 
 	$(".login_buttons .button").on("click", function(){
-		$('#myModal').modal("show");
-	})
+      new C.Views.Login();
+    })
 
 });
 
