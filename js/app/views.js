@@ -625,7 +625,7 @@ C.Views.ItemCrop = Backbone.View.extend({
 
 //		C.EventsItem.trigger(C.EventsItem.SETMASK, this.model, this.attrs);
 // 		this.close();
-		$('#myModal').modal("hide");
+		$('#crop_window_body').modal("hide");
 
 
 
